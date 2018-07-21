@@ -35,6 +35,7 @@
 #import "TESApi.h"
 #import "TESConfig.h"
 #import "TESLocationMgr.h"
+#import "TESMessagingProxy.h"
 #import "TESPushMgr.h"
 #import "TESUtil.h"
 #import "TESWalletMgr.h"

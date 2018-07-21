@@ -261,62 +261,123 @@
 
 #pragma mark - TESLocationMgrDelegate
 
-- (void)sendDeviceUpdate:(nonnull LocationInfo *)locInfo inBackground:(BOOL)background {
+- (void)sendDeviceUpdate: (nonnull NSArray *) locInfo inBackground:(BOOL)background {
     NSString * path = nil;
 
-    Device * dev = [self _fillDeviceFromLocation:locInfo];
-    NSDictionary * parameters = [dev toDictionary];
+    if (locInfo != nil && locInfo.count >0) {
+        for (NSUInteger i=0; i<locInfo.count; i++) {
 
-    TESApiCallback callback = ^ void (TESCallStatus  status, NSDictionary * _Nullable result){
-        switch (status) {
-        case TESCallSuccessOK: {
-                NSString *device_id = [result valueForKey:@"device_id"];
-                if (device_id != nil) {
-                    [self setToken:device_id forKey:DEVICE_TOKEN_KEY];
-                }
-                break;
-            }
-            case TESCallSuccessFAIL: {
-                NSNumber *code = [result valueForKey:@"code"];
-                NSString *msg = [result valueForKey:@"msg"];
-                if (code != nil && [code intValue] == ERROR_NOT_FOUND) {
-                    // looks like the device id has been nuked on the server. Just try again with a new device id
-                    NSLog(@"Trying again with no device token");
-                    [self clearToken:DEVICE_TOKEN_KEY];
-                    [self sendDeviceUpdate:locInfo inBackground:background];
+            Device *dev = [self _fillDeviceFromLocation:locInfo[i]];
+            NSDictionary *parameters = [dev toDictionary];
 
-                } else {
-                    [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"Device token request failed with unknown code: %@", msg]];
+            TESApiCallback callback = ^void(TESCallStatus status, NSDictionary *_Nullable result) {
+                switch (status) {
+                    case TESCallSuccessOK: {
+                        NSString *device_id = [result valueForKey:@"device_id"];
+                        if (device_id != nil) {
+                            [self setToken:device_id forKey:DEVICE_TOKEN_KEY];
+                        }
+                        break;
+                    }
+                    case TESCallSuccessFAIL: {
+                        NSNumber *code = [result valueForKey:@"code"];
+                        NSString *msg = [result valueForKey:@"msg"];
+                        if (code != nil && [code intValue] == ERROR_NOT_FOUND) {
+                            // looks like the device id has been nuked on the server. Just try again with a new device id
+                            NSLog(@"Trying again with no device token");
+                            [self clearToken:DEVICE_TOKEN_KEY];
+                            [self sendDeviceUpdate:locInfo inBackground:background];
+
+                        } else {
+                            [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"Device token request failed with unknown code: %@", msg]];
+                        }
+                        break;
+                    }
+                    case TESCallError: {
+                        NSString *msg = [result valueForKey:@"msg"];
+                        [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"HTTP Request failed : %@", msg]];
+                        break;
+                    }
+                    default:
+                        [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"HTTP Request failed : unknown status %ld", (long) status]];
                 }
-                break;
+            };
+
+            NSURLSessionDataTask *task;
+            if (self.deviceToken != nil) {
+                path = [[NSString alloc] initWithFormat:@"%@/%@", TES_PATH_GEODEVICE, self.deviceToken];
+                task = [self.api call:@"PUT" url:path parameters:parameters auth:YES completionHandler:callback];
+            } else {
+                path = TES_PATH_GEODEVICE;
+                task = [self.api call:@"POST" url:path parameters:parameters auth:YES completionHandler:callback];
             }
-            case TESCallError: {
-                NSString *msg = [result valueForKey:@"msg"];
-                [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"HTTP Request failed : %@", msg]];
-                break;
+
+            if (background) {
+                __weak __typeof(&*self) weakSelf = self;
+                [self.api setShouldExecuteAsBackgroundTask:task WithExpirationHandler:^{
+                    __strong __typeof(&*weakSelf) strongSelf = weakSelf;
+                    [strongSelf.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"HTTP Request background task terminated"]];
+                }];
             }
-            default:
-                [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"HTTP Request failed : unknown status %ld", (long)status]];
         }
+    }
+}
+
+- (void)sendRegionUpdate:(nonnull CLRegion *)region withLocation:(nonnull LocationInfo *)locInfo inBackground:(BOOL)background {
+
+    // TODO: fix this
+    /**
+    if (!_hasListeners)
+        return;
+
+    NSDictionary * result = @{
+            @"success": @YES,
+            @"location": [locInfo toDictionary]
     };
 
-    NSURLSessionDataTask * task;
-    if (self.deviceToken != nil){
-        path = [[NSString alloc] initWithFormat:@"%@/%@", TES_PATH_GEODEVICE, self.deviceToken];
-        task = [self.api call:@"PUT" url:path parameters:parameters auth:YES completionHandler: callback];
-    }
-    else {
-        path = TES_PATH_GEODEVICE;
-        task = [self.api call:@"POST" url:path parameters:parameters auth:YES completionHandler: callback];
-    }
+    [self sendEventWithName:onGeofenceUpdate body:result];
+     **/
 
-   if (background){
-       __weak __typeof(&*self)weakSelf = self;
-       [self.api setShouldExecuteAsBackgroundTask:task WithExpirationHandler:^{
-             __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-            [strongSelf.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"HTTP Request background task terminated"]];
-        }];
+}
+
+- (void)sendChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    //TODO:  fix this...
+/**
+    if (!_hasListeners)
+        return;
+
+    NSDictionary * result = @{
+            @"status":@(status),
+            @"status_name": [self.locMgr statusName:status]
+    };
+    [self sendEventWithName:onPermissionChange body:result];
+    **/
+}
+
+- (void) sendError:(nullable NSError *)error withMsg:(nullable NSString *)msg inGeo:(BOOL)geoError {
+
+    // TODO: FIX THIS...
+    /**
+
+    if (!_hasListeners)
+        return;
+
+    NSInteger code = -1;
+    NSString * errorMsg = @"";
+    if (error != nil){
+        code = [error code];
+        errorMsg = [error localizedDescription];
+
     }
+    NSDictionary * result = @{
+            @"success": @NO,
+            @"code":@(code),
+            @"error": [NSString stringWithFormat:@"%@ %@", msg, errorMsg]
+    };
+
+    NSString * type = (geoError) ? onGeofenceUpdate : onLocationUpdate;
+    [self sendEventWithName:type body:result];
+     **/
 }
 
 #pragma mark - TESWIAppDelegate

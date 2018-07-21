@@ -6,8 +6,6 @@
 //  Copyright (c) 2018 pfrantz. All rights reserved.
 //
 
-#import "WiSDK/TESWiApp.h"
-
 @import UIKit;
 
 @interface WiAppDelegate : UIResponder <UIApplicationDelegate>

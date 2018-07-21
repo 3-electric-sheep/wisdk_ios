@@ -397,7 +397,11 @@ typedef void (^errorBlockType)();
  
  */
 
--(void) sendDeviceUpdate: (nonnull LocationInfo *) locInfo inBackground: (BOOL) background;
+- (void) sendDeviceUpdate:(nonnull NSArray *)locInfo inBackground: (BOOL) background;
+- (void) sendRegionUpdate: (nonnull CLRegion *) region withLocation:(nonnull LocationInfo *) locInfo inBackground: (BOOL) background;
+- (void) sendChangeAuthorizationStatus:(CLAuthorizationStatus)status;
+
+- (void) sendError:(nullable NSError *)error withMsg:(nullable NSString *)msg inGeo:(BOOL)geoError;
 
 /**
  List all live events for a device token

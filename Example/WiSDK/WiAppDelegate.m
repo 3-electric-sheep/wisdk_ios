@@ -7,13 +7,26 @@
 //
 
 #import "WiAppDelegate.h"
-
+#import "WiSDK/TESWIApp.h"
 
 @implementation WiAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    NSString * PROVIDER_KEY = @"5271b6c4f92ea147fad12574";
+    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
+    config.authAutoAuthenticate = YES;
+    config.authCredentials = @{
+           @"anonymous_user": @YES,
+    };
+    config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
+    config.testPushProfile = @"wisdkdemo_dev";
+    config.pushProfile = @"wisdkdemo_prod";
+
+
+    TESWIApp * app = [TESWIApp manager];
+    [app start:config withLaunchOptions:launchOptions];
+
     return YES;
 }
 
