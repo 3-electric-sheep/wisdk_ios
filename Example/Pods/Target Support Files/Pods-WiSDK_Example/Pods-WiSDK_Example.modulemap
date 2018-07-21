@@ -1,0 +1,6 @@
+framework module Pods_WiSDK_Example {
+  umbrella header "Pods-WiSDK_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
