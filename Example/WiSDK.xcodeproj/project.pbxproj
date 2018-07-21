@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		44E268042E58738616B54771 /* Pods_WiSDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DA3C20AF0054E585667C4AC /* Pods_WiSDK_Example.framework */; };
+		5B62402E21034CF0006E4CF5 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B62402D21034CF0006E4CF5 /* PassKit.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -39,6 +40,8 @@
 /* Begin PBXFileReference section */
 		1C58B3004D50544E15F1D47D /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		314261B6A0952F50D7C5457C /* Pods-WiSDK_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WiSDK_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WiSDK_Tests/Pods-WiSDK_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		5B62402C21034CDA006E4CF5 /* WiSDK_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WiSDK_Example.entitlements; sourceTree = "<group>"; };
+		5B62402D21034CF0006E4CF5 /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
 		6003F58A195388D20070C39A /* WiSDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WiSDK_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -75,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
+				5B62402E21034CF0006E4CF5 /* PassKit.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
 				44E268042E58738616B54771 /* Pods_WiSDK_Example.framework in Frameworks */,
@@ -98,6 +102,7 @@
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
+				5B62402C21034CDA006E4CF5 /* WiSDK_Example.entitlements */,
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* Example for WiSDK */,
 				6003F5B5195388D20070C39A /* Tests */,
@@ -119,6 +124,7 @@
 		6003F58C195388D20070C39A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5B62402D21034CF0006E4CF5 /* PassKit.framework */,
 				6003F58D195388D20070C39A /* Foundation.framework */,
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
@@ -247,6 +253,20 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = pfrantz;
 				TargetAttributes = {
+					6003F589195388D20070C39A = {
+						DevelopmentTeam = F6F34P2L28;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.Wallet = {
+								enabled = 1;
+							};
+						};
+					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -487,11 +507,13 @@
 			baseConfigurationReference = E9295EF525A8D3FC4FF664C2 /* Pods-WiSDK_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WiSDK_Example.entitlements;
+				DEVELOPMENT_TEAM = F6F34P2L28;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WiSDK/WiSDK-Prefix.pch";
 				INFOPLIST_FILE = "WiSDK/WiSDK-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.3-electric-sheep.WiSDK-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -502,11 +524,13 @@
 			baseConfigurationReference = 65A8ED3499326832E3422ACE /* Pods-WiSDK_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WiSDK_Example.entitlements;
+				DEVELOPMENT_TEAM = F6F34P2L28;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WiSDK/WiSDK-Prefix.pch";
 				INFOPLIST_FILE = "WiSDK/WiSDK-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.3-electric-sheep.WiSDK-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

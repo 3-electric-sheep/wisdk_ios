@@ -90,4 +90,18 @@
 }
 
 
+- (void) application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {;
+    NSLog(@"Original didRegisterForRemoteNotificationsWithDeviceToken");
+}
+
+- (void) application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
+    NSLog(@"Original didFailToRegisterForRemoteNotificationsWithError");
+}
+
+- (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"Original didReceiveRemoteNotification");
+}
+
+
 @end

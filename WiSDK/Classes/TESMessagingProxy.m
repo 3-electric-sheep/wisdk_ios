@@ -11,6 +11,9 @@
 
 @property(nonatomic) BOOL didSwizzleMethods;
 
+@property(strong, nonatomic) NSMutableDictionary<NSString *, NSValue *> *originalAppDelegateImps;
+@property(strong, nonatomic) NSMutableDictionary<NSString *, NSArray *> *swizzledSelectorsByClass;
+
 @end
 
 
@@ -25,6 +28,15 @@
     return proxy;
 }
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _originalAppDelegateImps = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+
 + (void)swizzleMethods {
     [[TESMessagingProxy sharedProxy] swizzleMethodsIfPossible];
 }
@@ -37,37 +49,66 @@
     NSObject<UIApplicationDelegate> *appDelegate = [[UIApplication sharedApplication] delegate];
     Class appDelegateClass = [appDelegate class];
 
-    [TESMessagingProxy _swizzle:appDelegateClass method:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:) with: @selector(_wisdk_application:didRegisterForRemoteNotificationsWithDeviceToken:)];
-    [TESMessagingProxy _swizzle:appDelegateClass method:@selector(application:didFailToRegisterForRemoteNotificationsWithError:) with: @selector(_wisdk_application:didFailToRegisterForRemoteNotificationsWithError:)];
-    [TESMessagingProxy _swizzle:appDelegateClass method:@selector(application:didReceiveRemoteNotification:) with: @selector(_wisdk_application:didReceiveRemoteNotification:)];
+    [self _swizzle:appDelegateClass method:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:) with: @selector(_wisdk_application:didRegisterForRemoteNotificationsWithDeviceToken:)];
+    [self _swizzle:appDelegateClass method:@selector(application:didFailToRegisterForRemoteNotificationsWithError:) with: @selector(_wisdk_application:didFailToRegisterForRemoteNotificationsWithError:)];
+    [self _swizzle:appDelegateClass method:@selector(application:didReceiveRemoteNotification:) with: @selector(_wisdk_application:didReceiveRemoteNotification:)];
 
     self.didSwizzleMethods = YES;
 }
 
-+ (void)_swizzle: (Class) kls method: (SEL) originalSelector with: (SEL) swizzledSelector
+- (void)saveOriginalImplementation:(IMP)imp forSelector:(SEL)selector {
+    if (imp && selector) {
+        NSValue *IMPValue = [NSValue valueWithPointer:imp];
+        NSString *selectorString = NSStringFromSelector(selector);
+        self.originalAppDelegateImps[selectorString] = IMPValue;
+    }
+}
+
+- (IMP)originalImplementationForSelector:(SEL)selector {
+    NSString *selectorString = NSStringFromSelector(selector);
+    NSValue *implementation_value = self.originalAppDelegateImps[selectorString];
+    if (!implementation_value) {
+        return nil;
+    }
+
+    IMP imp;
+    [implementation_value getValue:&imp];
+    return imp;
+}
+
+- (void)_swizzle: (Class) kls method: (SEL) originalSelector with: (SEL) swizzledSelector
 {
     Method originalMethod = class_getInstanceMethod(kls, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(kls, swizzledSelector);
+    Method swizzledMethod = class_getInstanceMethod([self class], swizzledSelector);
 
-    // When swizzling a class method, use the following:
-    // Class class = object_getClass((id)self);
-    // ...
-    // Method originalMethod = class_getClassMethod(class, originalSelector);
-    // Method swizzledMethod = class_getClassMethod(class, swizzledSelector);
 
-    BOOL didAddMethod =
-            class_addMethod(kls,
-                    originalSelector,
-                    method_getImplementation(swizzledMethod),
-                    method_getTypeEncoding(swizzledMethod));
+    if (originalMethod && originalMethod != swizzledMethod) {
+        IMP __swizzle_method_implementation = method_getImplementation(swizzledMethod);
+        IMP __original_method_implementation = method_setImplementation(originalMethod, __swizzle_method_implementation);
+        [self saveOriginalImplementation:__original_method_implementation forSelector:originalSelector];
+    }
+    else {
 
-    if (didAddMethod) {
-        class_replaceMethod(kls,
-                swizzledSelector,
-                method_getImplementation(originalMethod),
-                method_getTypeEncoding(originalMethod));
-    } else {
-        method_exchangeImplementations(originalMethod, swizzledMethod);
+        // When swizzling a class method, use the following:
+        // Class class = object_getClass((id)self);
+        // ...
+        // Method originalMethod = class_getClassMethod(class, originalSelector);
+        // Method swizzledMethod = class_getClassMethod(class, swizzledSelector);
+
+        BOOL didAddMethod =
+                class_addMethod(kls,
+                        originalSelector,
+                        method_getImplementation(swizzledMethod),
+                        method_getTypeEncoding(swizzledMethod));
+
+        if (didAddMethod) {
+            class_replaceMethod(kls,
+                    swizzledSelector,
+                    method_getImplementation(originalMethod),
+                    method_getTypeEncoding(originalMethod));
+        } else {
+            method_exchangeImplementations(originalMethod, swizzledMethod);
+        }
     }
 }
 
@@ -77,13 +118,25 @@
 - (void)_wisdk_application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {;
     TESWIApp * app = [TESWIApp manager];
     [app registerRemoteNotificationToken:deviceToken];
-    [self _wisdk_application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+
+    SEL _sel = @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:);
+    IMP original_imp = [[TESMessagingProxy sharedProxy] originalImplementationForSelector:_sel];
+    if (original_imp) {
+        NSObject<UIApplicationDelegate> *appDelegate = [[UIApplication sharedApplication] delegate];
+        ((void (*)(id, SEL, UIApplication *, NSData *))original_imp)(appDelegate, _sel, application, deviceToken);
+    }
 }
 
 - (void)_wisdk_application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
     TESWIApp * app = [TESWIApp manager];
     [app didFailToRegisterForRemoteNotificationsWithError:error];
-    [self _wisdk_application:application didFailToRegisterForRemoteNotificationsWithError:error];
+
+    SEL _sel = @selector(application:didFailToRegisterForRemoteNotificationsWithError:);
+    IMP original_imp = [[TESMessagingProxy sharedProxy] originalImplementationForSelector:_sel];
+    if (original_imp) {
+        NSObject<UIApplicationDelegate> *appDelegate = [[UIApplication sharedApplication] delegate];
+        ((void (*)(id, SEL, UIApplication *, NSError *))original_imp)(appDelegate, _sel, application, error);
+    }
 
 }
 
@@ -91,7 +144,14 @@
 {
     TESWIApp * app = [TESWIApp manager];
     [app processRemoteNotification:userInfo];
-    [self _wisdk_application:application didReceiveRemoteNotification:userInfo];
+
+
+    SEL _sel = @selector(application:didReceiveRemoteNotification:);
+    IMP original_imp = [[TESMessagingProxy sharedProxy] originalImplementationForSelector:_sel];
+    if (original_imp) {
+        NSObject<UIApplicationDelegate> *appDelegate = [[UIApplication sharedApplication] delegate];
+        ((void (*)(id, SEL, UIApplication *, NSDictionary *))original_imp)(appDelegate, _sel, application, userInfo);
+    }
 }
 
 @end
