@@ -1,0 +1,14 @@
+/****************************************************************************/
+/* Localization file */
+
+
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Background Location Access Disabled" = "Background Location Access Disabled";
+"In order to be notified about special offers near you, please open this app's settings and set location access to 'Always'." = "In order to be notified about special offers near you, please open this app's settings and set location access to 'Always'.";
+
+"In order to be notified about special offers near you even when you are not using the app, please open this app's settings and set location access to 'Always'." = "In order to be notified about special offers near you even when you are not using the app, please open this app's settings and set location access to 'Always'.";
+"Location Access disabled" = "Location Access disabled";
+"In order to be notified about special offers near while using the app, please open this app's settings and set location access to 'Always'." = "In order to be notified about special offers near while using the app, please open this app's settings and set location access to 'Always'.";
+"In order to be notified about special offers near you, please open this app's settings and enable notifications" = "In order to be notified about special offers near you, please open this app's settings and enable notifications";
+"Remote notifications disabled" = "Remote notifications disabled";

@@ -10,7 +10,6 @@
 #endif
 #endif
 
-#import "AppDelegate+TESWIAppDelegate.h"
 #import "AccountInfo.h"
 #import "Contact.h"
 #import "DayOpenDetail.h"
