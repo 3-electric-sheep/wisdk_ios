@@ -15,10 +15,6 @@
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
-static BOOL atLeastIOS(NSString * _Nonnull ver) {
-    return SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(ver);
-}
-
 @interface TESUtil : NSObject
 ///-----------------------
 /// @name utility methods
@@ -45,6 +41,8 @@ static BOOL atLeastIOS(NSString * _Nonnull ver) {
                                   minute: (NSInteger) minute
                                   second: (NSInteger) second
                                 timezone: (nullable NSTimeZone *) timezone;
+
++ (BOOL) atLeastIOS: (NSString *) ver;
 
 ///----------------
 /// @name Functions

@@ -329,6 +329,7 @@
         newRegion.notifyOnExit = YES;
 
         // Start monitoring the newly created region.
+        NSLog(@"Start monitoring region %@ (%f,%f) %f ", newRegion.identifier, coord.latitude, coord.longitude, radius);
         [self.locationManager startMonitoringForRegion:newRegion];
         return YES;
 

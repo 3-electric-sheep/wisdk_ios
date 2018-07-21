@@ -117,4 +117,8 @@ NSDate * TESDateFromISO8601String(NSString *ISO8601String) {
     return [NSDate dateWithTimeIntervalSince1970:mktime(&tm)];
 }
 
-@end;
++ (BOOL) atLeastIOS: (NSString *) ver {
+    return SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(ver);
+};
+@end
+

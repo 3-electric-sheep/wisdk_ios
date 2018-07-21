@@ -198,7 +198,7 @@
 
     // if we have a device token and we have a fix already, update the device with this push info
     if (self.deviceToken != nil && self.locMgr.lastLocation != nil){
-        [self sendDeviceUpdate:self.locMgr.lastLocation inBackground: NO];
+        [self sendDeviceUpdate:@[self.locMgr.lastLocation] inBackground: NO];
     }
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(onRemoteNoficiationRegister:withResponse:)]){
@@ -264,10 +264,13 @@
 - (void)sendDeviceUpdate: (nonnull NSArray *) locInfo inBackground:(BOOL)background {
     NSString * path = nil;
 
+    LocationInfo * lastloc = nil;
+
     if (locInfo != nil && locInfo.count >0) {
         for (NSUInteger i=0; i<locInfo.count; i++) {
+            lastloc = locInfo[i];
 
-            Device *dev = [self _fillDeviceFromLocation:locInfo[i]];
+            Device *dev = [self _fillDeviceFromLocation:lastloc];
             NSDictionary *parameters = [dev toDictionary];
 
             TESApiCallback callback = ^void(TESCallStatus status, NSDictionary *_Nullable result) {
@@ -321,47 +324,39 @@
             }
         }
     }
+
+    if (lastloc != nil) {
+        [self clearGeofences];
+        [self addGeofences: @[
+           @{
+                 @"latitude": lastloc.latitude,
+                 @"longitude": lastloc.longitude,
+                 @"radius": @(self.config.geoRadius),
+                 @"identifier": [NSString stringWithFormat:@"gf_%@", [[NSUUID UUID] UUIDString]]
+            }
+        ]];
+        self.lastLoc = lastloc;
+    }
 }
 
 - (void)sendRegionUpdate:(nonnull CLRegion *)region withLocation:(nonnull LocationInfo *)locInfo inBackground:(BOOL)background {
-
-    // TODO: fix this
-    /**
-    if (!_hasListeners)
-        return;
-
-    NSDictionary * result = @{
-            @"success": @YES,
-            @"location": [locInfo toDictionary]
-    };
-
-    [self sendEventWithName:onGeofenceUpdate body:result];
-     **/
-
+    if (locInfo.didExit){
+        locInfo.regionIdentifier = nil; // clear this so no geo region info is sent to the server
+        [self sendDeviceUpdate:@[locInfo] inBackground:background];
+    }
 }
 
 - (void)sendChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    //TODO:  fix this...
-/**
-    if (!_hasListeners)
-        return;
-
-    NSDictionary * result = @{
-            @"status":@(status),
-            @"status_name": [self.locMgr statusName:status]
-    };
-    [self sendEventWithName:onPermissionChange body:result];
-    **/
+    if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse){
+        if (self.isAuthorized)
+            [self.locMgr ensureMonitoring];
+    }
+    else {
+        [self.locMgr ensureNotMonitoring];
+    }
 }
 
 - (void) sendError:(nullable NSError *)error withMsg:(nullable NSString *)msg inGeo:(BOOL)geoError {
-
-    // TODO: FIX THIS...
-    /**
-
-    if (!_hasListeners)
-        return;
-
     NSInteger code = -1;
     NSString * errorMsg = @"";
     if (error != nil){
@@ -369,15 +364,66 @@
         errorMsg = [error localizedDescription];
 
     }
-    NSDictionary * result = @{
-            @"success": @NO,
-            @"code":@(code),
-            @"error": [NSString stringWithFormat:@"%@ %@", msg, errorMsg]
-    };
+    NSString * debugMsg =  [NSString stringWithFormat:@"%@ %@ (Code=%ld)", msg, errorMsg, (long) code];
+    [self.locMgr writeDebugMsg:nil msg:debugMsg];
+}
 
-    NSString * type = (geoError) ? onGeofenceUpdate : onLocationUpdate;
-    [self sendEventWithName:type body:result];
-     **/
+#pragma mark - TESLocationMgrDelegate helpers
+/**
+ * Adds geofences. This method should be called after the user has granted the location
+ * permission.
+ */
+- (BOOL) addGeofences: (NSArray *) geofencesToAdd
+{
+    for (NSDictionary * entry in geofencesToAdd) {
+        double lat = [[entry valueForKey:@"latitude"] doubleValue];
+        double lng = [[entry valueForKey:@"longitude"] doubleValue];
+        NSNumber * radiusObj =  [entry valueForKey:@"radius"];
+        double radius = (radiusObj != nil) ? [radiusObj doubleValue]: -1;
+        NSString * ident =[entry valueForKey:@"identifier"];
+
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lng);
+        if (![self.locMgr addRegion:coord andRadius:radius andIdentifier:ident]) {
+            NSString * msg = [self getError];
+            [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"AddGeofenceFailed %@", msg]];
+            return NO;
+        }
+    }
+    return YES;
+}
+
+/**
+ * Removes geofences by id. This method should be called after the user has granted the location
+ * permission.
+ */
+- (BOOL) removeGeofences:(NSArray<NSString *> *) ids
+{
+    for(NSString * ident in ids) {
+        if (![self.locMgr removeRegion:ident]) {
+            NSString * msg = [self getError];
+            [self.locMgr writeDebugMsg:nil msg:[NSString stringWithFormat:@"RemoveGeofenceFailed %@", msg]];
+            return NO;
+        }
+    }
+    return YES;
+}
+
+/**
+ * Removes all geofences. This method should be called after the user has granted the location
+ * permission.
+ */
+- (void)clearGeofences
+{
+    [self.locMgr clearRegions];
+}
+
+-(NSString *) getError {
+    if (self.locMgr == nil)
+        return @"Location manager has not been initialised";
+
+    NSString *err = [self.locMgr getErrorMsg];
+    [self.locMgr clearErrorMsg];
+    return err;
 }
 
 #pragma mark - TESWIAppDelegate

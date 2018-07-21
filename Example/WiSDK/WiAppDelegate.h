@@ -7,8 +7,9 @@
 //
 
 @import UIKit;
+#import <WiSDK/TESWIApp.h>
 
-@interface WiAppDelegate : UIResponder <UIApplicationDelegate>
+@interface WiAppDelegate : UIResponder <UIApplicationDelegate, TESWIAppDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

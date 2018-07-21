@@ -25,6 +25,8 @@
 
 
     TESWIApp * app = [TESWIApp manager];
+    app.delegate = self;
+
     [app start:config withLaunchOptions:launchOptions];
 
     return YES;
@@ -56,5 +58,36 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+#pragma mark - TESWiAppDelegate
+
+- (void)authorizeFailure:(NSInteger)httpStatus {
+    NSLog(@"--> Authorize failure: %ld", (long) httpStatus);
+}
+
+- (void)onAutoAuthenticate:(TESCallStatus)status withResponse:(nonnull NSDictionary *)responseObeject {
+    NSLog(@"--> onAutoAuthenticate %@", responseObeject);
+}
+
+- (void)newAccessToken:(nullable NSString *)token {
+    NSLog(@"--> newAccessToken %@", token);
+}
+
+- (void)newDeviceToken:(nullable NSString *)token {
+    NSLog(@"--> newDeviceToken %@", token);
+}
+
+- (void)newPushToken:(nullable NSString *)token {
+    NSLog(@"--> newPushToken %@", token);
+}
+
+- (void)processRemoteNotification:(nullable NSDictionary *)userDictionary {
+    NSLog(@"--> processRemoteNotification %@", userDictionary);
+}
+
+- (void)onRemoteNoficiationRegister:(TESCallStatus)status withResponse:(nonnull NSDictionary *)responseObeject {
+    NSLog(@"--> onRemoteNoficiationRegister %@", responseObeject);
+}
+
 
 @end

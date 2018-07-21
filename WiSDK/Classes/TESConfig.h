@@ -30,7 +30,7 @@
 #define MEM_CACHE_SIZE 8388608  //8 * 1024 * 1024;
 #define DISK_CACHE_SIZE 20971520 // 20 * 1024 * 1024;
 
-#define GEOFENCE_RADIUS  20; // 20 mtrs
+#define GEOFENCE_RADIUS  50; //50 mtrs
 
 #define DEVICE_TYPE_APN  @"apn"
 #define DEVICE_TYPE_MAIL  @"mail"

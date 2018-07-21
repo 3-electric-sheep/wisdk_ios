@@ -6,7 +6,6 @@
 //  Copyright © 2017 3 Electric Sheep Pty Ltd. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
 #import "TESPushMgr.h"
 #import "TESUtil.h"
@@ -38,7 +37,7 @@
 - (void) registerRemoteNotifications
 {
     UIApplication * app =  [UIApplication sharedApplication];
-    if (atLeastIOS(@"10.0")){
+    if ([TESUtil atLeastIOS:@"10.0"]){
         UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
         [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge)
                               completionHandler:^(BOOL granted, NSError * _Nullable error) {
@@ -84,12 +83,12 @@
                               }];
         [app registerForRemoteNotifications];
     }
-    else if (atLeastIOS(@"9.0")) {
+    else if ([TESUtil atLeastIOS:@"9.0"]) {
         // Let the device know we want to receive push notifications
         [app registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
         [app registerForRemoteNotifications];
     }
-    else if (atLeastIOS(@"8.0")){
+    else if ([TESUtil atLeastIOS:@"8.0"]){
         [app registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories: nil]];
         [app registerForRemoteNotifications];
     }

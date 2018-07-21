@@ -214,6 +214,12 @@ typedef void (^errorBlockType)();
 @property (nonatomic, strong, nullable) NSString * versionToken;
 
 /**
+ * Last registered location
+ *
+ */
+ @property (nonatomic, strong, nullable) LocationInfo * lastLoc;
+
+/**
  One off error handler.
  
  IMPORTANT: if set this will be automatically reset in a notify error block but it is your responsibility
@@ -304,7 +310,7 @@ typedef void (^errorBlockType)();
 
 /**
  * Authenticate a session
- * @param params params to pass to register/login
+ * @param inputParams params to pass to register/login
  * @param completionBlock call on function result
  */
 -(void) authenticate: (nullable NSDictionary *) inputParams completion:(TESApiCallback) completionBlock;
@@ -592,7 +598,7 @@ typedef void (^errorBlockType)();
 - (nullable NSDictionary *) getExclusions;
 
 - (void) excludeEventType: (nonnull NSString *) exc_type andCategory: (nullable NSString *) exc_cat withCompletion:(TESApiCallback) completionBlock;
-- (void) includeyEventType: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat withCompletion:(TESApiCallback) completionBlock;
+- (void) includeEventType: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat withCompletion:(TESApiCallback) completionBlock;
 
 // notify support
 - (void) allowNotifyEventType: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat withCompletion:(TESApiCallback) completionBlock;
