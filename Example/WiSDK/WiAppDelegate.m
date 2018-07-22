@@ -13,16 +13,22 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    NSString * PROVIDER_KEY = @"5271b6c4f92ea147fad12574";
+    NSString * PROVIDER_KEY = @"5b53e675ec8d831eb30242d3"; // the wisdk-example account (user is wisdk@3-electric-sheep.com)
     TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
     config.authAutoAuthenticate = YES;
     config.authCredentials = @{
            @"anonymous_user": @YES,
     };
     config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
-    config.testPushProfile = @"wisdkdemo_dev";
-    config.pushProfile = @"wisdkdemo_prod";
-
+    
+#ifdef DEBUG
+    config.testPushProfile = @"wisdk-example-aps-dev";  // test profile name (allocted by 3es)
+    config.pushProfile = @"wisdk-example-aps-dev"; // prod profile name (allocated by 3es)
+#endif
+#ifndef DEBUG
+    config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
+    config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es)
+#endif
 
     TESWIApp * app = [TESWIApp manager];
     app.delegate = self;

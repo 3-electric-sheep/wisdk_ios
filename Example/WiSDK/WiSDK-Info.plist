@@ -31,9 +31,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We use your location to notify you of great offers near you. Please select always as this gives you welcome interuptions near you.</string>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
+	<array/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

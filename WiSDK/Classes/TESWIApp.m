@@ -605,15 +605,11 @@
     NSMutableArray * pushTargets = [[NSMutableArray alloc] initWithCapacity:5];
     PushInfo * pushInfo = nil;
     if (self.config.deviceTypes & deviceTypeAPN){
-        // setup the push token if its new or we are a new device.
-        if (self.pushToken != nil){
-            pushInfo = [[PushInfo alloc] init];
-            pushInfo.pushToken = self.pushToken;
-            pushInfo.pushType = DEVICE_TYPE_APN;
-            pushInfo.pushProfile = self.config.envPushProfile;
-            [pushTargets addObject:pushInfo];
-        }
-
+        pushInfo = [[PushInfo alloc] init];
+        pushInfo.pushToken = self.pushToken;
+        pushInfo.pushType = DEVICE_TYPE_APN;
+        pushInfo.pushProfile = self.config.envPushProfile;
+        [pushTargets addObject:pushInfo];
     }
 
     if (self.config.deviceTypes & deviceTypeWallet){

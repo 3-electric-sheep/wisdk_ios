@@ -134,8 +134,14 @@ typedef void (^errorBlockType)();
 // TESWIApp interface
 //----------------------------------------------
 
+/***
+ * TESWiApp main interface
+ */
 @interface TESWIApp : NSObject <TESLocationMgrDelegate, TESApiDelegate>
 
+/***
+ *
+ */
 @property (nullable) id <TESWIAppDelegate> delegate;
 
 
@@ -253,6 +259,7 @@ typedef void (^errorBlockType)();
 /**
  shared client is a singleton used to make all store related callses
  */
+
 
 + (nonnull TESWIApp *)manager;
 
