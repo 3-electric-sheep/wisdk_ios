@@ -1,4 +1,4 @@
-#
+#h
 # Be sure to run `pod lib lint WiSDK.podspec' to ensure this is a
 # valid spec before submitting.
 #
