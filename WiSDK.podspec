@@ -25,7 +25,7 @@ location information from a mobile device to the Wi Servers and allow the receip
   s.homepage         = 'http://www.welcomeinterruption.com'
   s.license          = { :type => 'APACHE', :file => 'LICENSE' }
   s.author           = { 'pfrantz' => 'pfrantz@3-elecric-sheep.com' }
-  s.source           = { :git => 'git clone https://3es-intergrator:3zrUfjvVBW@github.com/3-electric-sheep/wisdk_ios.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://3es-intergrator:3zrUfjvVBW@github.com/3-electric-sheep/wisdk_ios.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
 
