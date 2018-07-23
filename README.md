@@ -188,7 +188,7 @@ this protocol is defined in WiSDK/TESWiApp.h as follows:-
 
 ```objective-c
 
-@@protocol TESWIAppDelegate <NSObject>
+ @protocol TESWIAppDelegate <NSObject>
 
     /*
      sent when authorization has failed (401)
@@ -227,7 +227,7 @@ this protocol is defined in WiSDK/TESWiApp.h as follows:-
      */
     -(void) onRemoteNoficiationRegister:(TESCallStatus)status withResponse: (nonnull NSDictionary *) responseObeject;
 
-@@end
+ @end
 
 ```
 
