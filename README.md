@@ -47,7 +47,6 @@ WiSDK is available through a private repository to allow access to this reposito
 
 ```ruby
 pod repo add wi-specs https://3es-Integrator:3zrUfjvVBW@github.com/3-electric-sheep/wi-specs.git
-
 ```
 
 2. Add the source directive at the top of your pos file. This goes to the wi-spec repository then the master cocoapod repository:-
@@ -80,14 +79,6 @@ but this will serverly limit what Wi is capable of.
 
 **IMPORTANT: do *NOT* set the background location checkbox on the background capabilities option.
 Wi does not use it and setting this will adversely affect battery life.**
-
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first. This example is useful as it has a
-project correctly configured to run Wi.
-
-It is a bare bones project that will send location information from the device to the Wi Servers.  It also
-has a demo provider key  which can be used to send offers from wi to the device.
 
 ## Getting Started
 
@@ -122,6 +113,7 @@ Typically integration is done as follows:-
 2. Create listener / delegate (optional)
 3. Start Wi up
 4. Use the API to list offers, update profiles, etc (optional)
+5. Permissions and capabilities
 
 Wi works silently in background sending location updates to our servers as users go about their daily business. You can even close the app and
 everything just keeps working
@@ -272,9 +264,50 @@ The remainder of the WiSDK wraps the Wi Rest based API. This API can be used to
 * setting up inclusions/exclusions for event notification
 * searching for events
 
+### Permissions and capabilites
+
+Ensure that your info.plist has the correct location privacy entries
+
+```xml
+    <key>
+        NSLocationAlwaysUsageDescription
+    </key>
+    <string>
+        We use your location to notify you of great offers near you. Please select always as this gives you welcome interuptions near you.
+    </string>
+    <key>
+        NSLocationAlwaysAndWhenInUseUsageDescription
+    </key>
+    <string>
+        We use your location to notify you of great offers near you. Please select always as this gives you welcome interuptions near you.
+    </string>
+    <key>
+       NSLocationWhenInUseUsageDescription
+    </key>
+    <string>
+        We use your location to notify you of great offers near you. Please select always as this gives you welcome interuptions near you.
+    </string>
+```
+
+Ensure that in the capabilites you have
+
+* Push Notifications enabled
+* Wallet services enabled (optional if you want to support wallet services)
+* Background services - and tick allow remote notifications
+
+** NOTE: do NOT tick allow background location as this will drain battery very quickly.
+
 ## API documentation
 
-For further API documentation see the doc/html/index.html file
+For further API documentation, clone the repo and open the doc/html/index.html file
+
+## Example
+
+To run the example project, clone the repo, and run `pod install` from the Example directory first. This example is useful as it has a
+project correctly configured to run Wi.
+
+It is a bare bones project that will send location information from the device to the Wi Servers.  It also
+has a demo provider key  which can be used to send offers from wi to the device.
 
 ## Author
 
