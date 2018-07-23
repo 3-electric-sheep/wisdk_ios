@@ -46,7 +46,6 @@
 		6595C6295B9EBBF40751A376239681FD /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EF0F7569C1C4BFC3EF2C9DA3D50CC0B /* UIProgressView+AFNetworking.m */; };
 		68D58A698B66D2A0A4AAF7F23444C6CD /* LiveEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 94031597AC7EF168ABA36DC8DD9C899C /* LiveEvent.m */; };
 		6AB8F78680B3470391219F11D51A1DE7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A23D5B238032195CA6F925D556B9F96 /* UIImageView+AFNetworking.m */; };
-		6BEB9085116D79AB29BE2E009DD0505B /* User.h in Headers */ = {isa = PBXBuildFile; fileRef = EF813CE90885137C5EC3DA97532A3238 /* User.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7099E4035C06D3116DA2586EFE563C0B /* AFAutoPurgingImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1174ABA877619CC640989D6AC9A07DF1 /* AFAutoPurgingImageCache.m */; };
 		7178FD11889F6BFAA7D8FA029365B184 /* PushInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 56644D522469866A40F5710FEDD9E701 /* PushInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		745453E466ED0CA72A6313C32E59A52F /* GalleryImage.h in Headers */ = {isa = PBXBuildFile; fileRef = B2515D39EBFEA20158067AAD77275F86 /* GalleryImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -102,8 +101,9 @@
 		D3D5F6D14E19B8A32293C970A50BA5DB /* TESConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 644F4E547532CF13015F6CB97CF645CB /* TESConfig.m */; };
 		D48D297EF0A14C37B7040B55CB44A322 /* Pods-WiSDK_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 349516A715A44B010C30AEDCD44CF7AC /* Pods-WiSDK_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D829B2F33C2F1F5676846BD041C851B2 /* SystemConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = A93FE744254D7C8A64BE72961CB81EC3 /* SystemConfig.m */; };
+		D93C7213A55EBE6F94289FD4 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D93C745AEA9C6A6D585F8B0A /* User.m */; };
+		D93C77707D687D316A65ECD0 /* User.h in Headers */ = {isa = PBXBuildFile; fileRef = D93C75F4E7A5E53D8257A381 /* User.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA486AF180F000BD2623BE1413FB3E6A /* TESPushMgr.h in Headers */ = {isa = PBXBuildFile; fileRef = 33250A680939687BA8824EBAC2BBF4C6 /* TESPushMgr.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DDF876001BA6654800AFED827E5FCF8A /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = C155F17DFE308C88DFE1E878831A3497 /* User.m */; };
 		E0249FCFF752976A445BB0AC8BFAB82A /* Pods-WiSDK_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B1137596F6EC2DBB956A01CCAD181FC3 /* Pods-WiSDK_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E16AEA1B24AEC4291D975EFEDC902616 /* OpenTimes.m in Sources */ = {isa = PBXBuildFile; fileRef = 529C27B648AEC5277452360D15DE2232 /* OpenTimes.m */; };
 		E3288718FDB27B421B9C37F0ED59C136 /* SystemConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = E15B3F282A1D96ED5873AF8BC254D4BB /* SystemConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -268,7 +268,6 @@
 		BE62D258251F0E3CC57836C93584D335 /* UIActivityIndicatorView+AFNetworking.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIActivityIndicatorView+AFNetworking.m"; path = "UIKit+AFNetworking/UIActivityIndicatorView+AFNetworking.m"; sourceTree = "<group>"; };
 		BEE793B89B77C4D167C349856BBADA18 /* LiveEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LiveEvent.h; sourceTree = "<group>"; };
 		BF1D89BEED3766388A77B2FCB9912393 /* AFNetworking-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AFNetworking-umbrella.h"; sourceTree = "<group>"; };
-		C155F17DFE308C88DFE1E878831A3497 /* User.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		C5245E31FB20DA5DAD66ABC46FFED70B /* ReviewSummary.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ReviewSummary.m; sourceTree = "<group>"; };
 		C90CE9B626C1720C9ADB8FF999E47D68 /* UIRefreshControl+AFNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIRefreshControl+AFNetworking.h"; path = "UIKit+AFNetworking/UIRefreshControl+AFNetworking.h"; sourceTree = "<group>"; };
 		C981116C7B3C73AA73246E5DDFC7D154 /* AFNetworking.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AFNetworking.modulemap; sourceTree = "<group>"; };
@@ -283,6 +282,8 @@
 		D5AC2B32BB6075B6409E440BD364A5D3 /* TESWalletMgr.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = TESWalletMgr.m; path = WiSDK/Classes/TESWalletMgr.m; sourceTree = "<group>"; };
 		D5E9CBCE5E4D8713E454C38B818B6765 /* AFNetworking-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AFNetworking-prefix.pch"; sourceTree = "<group>"; };
 		D898FD5D48B2A34DCB273D777AAE97F0 /* PushInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PushInfo.m; sourceTree = "<group>"; };
+		D93C745AEA9C6A6D585F8B0A /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = WiSDK/Classes/Model/User.m; sourceTree = "<group>"; };
+		D93C75F4E7A5E53D8257A381 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = WiSDK/Classes/Model/User.h; sourceTree = "<group>"; };
 		DC54E5FB7DECFA678B89F0F6C0AA8F12 /* SearchEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SearchEvent.h; sourceTree = "<group>"; };
 		DEED572A13E617CEC60DC627FAF407F4 /* Pods-WiSDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-WiSDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		E15B3F282A1D96ED5873AF8BC254D4BB /* SystemConfig.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SystemConfig.h; sourceTree = "<group>"; };
@@ -292,7 +293,6 @@
 		E79F20FA67EF326AC8DE380E6118EBF4 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIWebView+AFNetworking.m"; path = "UIKit+AFNetworking/UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
 		EA796FBE21C729E798B09304CD21AFD7 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		EC4FEF78902761EDE1FE6F5B53C96E2F /* Poi.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = Poi.m; sourceTree = "<group>"; };
-		EF813CE90885137C5EC3DA97532A3238 /* User.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		F1423F692F2541CFE55253BC467F0025 /* UIKit+AFNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIKit+AFNetworking.h"; path = "UIKit+AFNetworking/UIKit+AFNetworking.h"; sourceTree = "<group>"; };
 		F3868377C16F9EF9C8F52EAB802C1AD5 /* Pods-WiSDK_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-WiSDK_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		F3A5F892BC69CA5CEF65828C143FBAF2 /* WiSDK.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; path = WiSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -465,8 +465,6 @@
 				15BDD7F2D99FB01EEEFDD76405EC2B74 /* SnappedEvent.m */,
 				E15B3F282A1D96ED5873AF8BC254D4BB /* SystemConfig.h */,
 				A93FE744254D7C8A64BE72961CB81EC3 /* SystemConfig.m */,
-				EF813CE90885137C5EC3DA97532A3238 /* User.h */,
-				C155F17DFE308C88DFE1E878831A3497 /* User.m */,
 			);
 			name = Model;
 			path = WiSDK/Classes/Model;
@@ -478,6 +476,8 @@
 				387110A3F45DEF34CD7D958A5331BA58 /* LICENSE */,
 				5901E8DE4650A3194663B3FF858A26A5 /* README.md */,
 				F3A5F892BC69CA5CEF65828C143FBAF2 /* WiSDK.podspec */,
+				D93C745AEA9C6A6D585F8B0A /* User.m */,
+				D93C75F4E7A5E53D8257A381 /* User.h */,
 			);
 			name = Pod;
 			sourceTree = "<group>";
@@ -726,8 +726,8 @@
 				018E9B315C2786C6A7168360BF8696AA /* TESUtil.h in Headers */,
 				FDF520230CACA4FFF2DEA9C6B00DFC17 /* TESWalletMgr.h in Headers */,
 				3B66C3474DABA1C8BCBAA51A9D8A2F9E /* TESWIApp.h in Headers */,
-				6BEB9085116D79AB29BE2E009DD0505B /* User.h in Headers */,
 				F2BDAE85A09CDD4B386F01ECDBD7FAF2 /* WiSDK-umbrella.h in Headers */,
+				D93C77707D687D316A65ECD0 /* User.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -917,8 +917,8 @@
 				CCEF2471834337BCF3792EC7074D7633 /* TESUtil.m in Sources */,
 				D2D1D1D619CF8DB9AAFB857FF3C7B2A5 /* TESWalletMgr.m in Sources */,
 				B61B075B9006536FDB4B8054DBF4B2AF /* TESWIApp.m in Sources */,
-				DDF876001BA6654800AFED827E5FCF8A /* User.m in Sources */,
 				EF505927B8A8B1334133A4F016373D5F /* WiSDK-dummy.m in Sources */,
+				D93C7213A55EBE6F94289FD4 /* User.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

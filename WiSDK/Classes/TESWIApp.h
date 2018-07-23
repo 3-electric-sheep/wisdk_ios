@@ -3,13 +3,24 @@
 //  WISDKdemo
 //
 //  Created by Phillp Frantz on 18/07/2017.
-//  Copyright © 2012-2017 3 Electric Sheep Pty Ltd. All rights reserved.
+//  Copyright © 2012-2018 3 Electric Sheep Pty Ltd. All rights reserved.
 //
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 #ifndef TESWIApp_h
 #define TESWIApp_h
 
-/**
+/***
  
  TESWIApp
      |
@@ -85,117 +96,148 @@
 
 typedef void (^errorBlockType)();
 
-//----------------------------------------------
-// TESWIAppDelegate protocol
-//----------------------------------------------
+/**
+  TESWIAppDelegate protocol
+
+  Used to relay particular events and get important information to the implementing class.
+
+  Only AuthorizeFailure in required to be implement all others are optional
+*/
 @protocol TESWIAppDelegate <NSObject>
 
 /**
- sent when authorization has failed (401)
+ sent when authorization has failed from wi servers (http 401 or 403)
+
+ @param httpStatus the returned http status from wi servers
  */
 - (void) authorizeFailure: (NSInteger) httpStatus;
 
 @optional
 
 /**
- * sent when authorization is complete
+  sent when authorization is complete
+
+  @param status the response status
+  @param responseObeject the dictionary response if any from the wi server
 */
 - (void) onAutoAuthenticate:(TESCallStatus)status withResponse: (nonnull NSDictionary *) responseObeject;
 
 /**
- * sent when a new access token is returned
- */
+  sent when a new access authentication token is returned
+
+  @param token the new access token
+*/
 - (void) newAccessToken: (nullable NSString *) token;
 
 /**
- sent when a new device token has been created
- */
+ sent when a new device token has been created. A device is created on successful authentication
+ once the token is saved subsequent location updates use this device token.
+
+ @param token the new device token
+*/
 - (void) newDeviceToken: (nullable NSString *) token;
 
 /**
- * sent when a new push token is returned
- */
+ sent when a new push token is returned
+
+ @param token the push token returned by didRegisterForRemoteNotificationsWithDeviceToken
+*/
 - (void) newPushToken: (nullable NSString *) token;
 
 /**
- * Called when a remmote notification needs to be processed
- */
+  Called when a remmote notification needs to be processed and the app is in foreground
+
+  @param userDictionary sent with the notification
+*/
 - (void) processRemoteNotification: (nullable NSDictionary *) userDictionary;
 
 /**
- * Called when remote notifications is registered or fails to register
- *
+  Called when remote notifications is registered or fails to register
+
+  @param status the register status
+  @param responseObeject the dictionary if any returned
  */
 -(void) onRemoteNoficiationRegister:(TESCallStatus)status withResponse: (nonnull NSDictionary *) responseObeject;
 
 @end
 
-//----------------------------------------------
-// TESWIApp interface
-//----------------------------------------------
+/**
+  @class TESWIApp TESWIApp.h "WiSDK/TESWiApp.h"
 
-/***
- * TESWiApp main interface
+  TESWiApp main interface class.  This is the starting point for all interaction with Wi.
+
  */
 @interface TESWIApp : NSObject <TESLocationMgrDelegate, TESApiDelegate>
 
-/***
- *
- */
+/**
+  @property delegate
+
+  Used to specify the delegate class for the TESWIAppDelegate
+*/
 @property (nullable) id <TESWIAppDelegate> delegate;
 
 
 /**
- environment details
+ @property config
+ COnfiguration object
 
  used to specify:-
- 
- server
- testserver
- push profile
- test push profile
- cache size
+
+ provider key
+ authentication type
+ server type (test/prod)
+ push profile (test/prod)
+ location and geofence size
+
  */
 @property (nonatomic, strong, nullable) TESConfig * config;
 
 /**
+ @property api
  API manager for dealing with all REST based api calls
  **/
 @property (nonatomic, strong, nullable) TESApi * api;
 
 /**
+ @property locMgr
  Location manager for dealing with location monitoring
  **/
 @property (nonatomic, strong, nullable) TESLocationMgr * locMgr;
 
 /**
+ @property pushMgr
  Push manager for dealing with push notification
  **/
 
 @property (nonatomic, strong, nullable) TESPushMgr * pushMgr;
 
 /**
+ @property walletMgr
  Wallet mamager for dealing with wallet based events
  **/
 @property (nonatomic, strong, nullable) TESWalletMgr * walletMgr;
 
 /**
- * username associated with current api access token
+ @property authUserName
+ username associated with current api access token
  */
 
 @property (nonatomic, strong, nullable) NSString * authUserName;
 
 /**
+ @property deviceToken
  device Token associated with this device
  **/
 @property (nonatomic, strong, nullable) NSString *deviceToken;
 
 /**
+ @property pushToken
  APN push token associated with this device
  **/
 @property (nonatomic, strong, nullable) NSString *pushToken;
 
 /**
+ @property providerToken
  provider token - all users and secure items will be tied to this provider
  */
 
@@ -203,29 +245,33 @@ typedef void (^errorBlockType)();
 
 
 /**
+ @property localeToken
  currently saved locale info
  */
 
 @property (nonatomic, strong, nullable) NSString *localeToken;
 
 /**
+ @property timezoneToken
  currently saved token info
  */
 
 @property (nonatomic, strong, nullable) NSString * timezoneToken;
 
 /**
+ @property versionToken
  currently saved last run version info
  **/
 @property (nonatomic, strong, nullable) NSString * versionToken;
 
 /**
+ @property lastLoc
  * Last registered location
- *
  */
  @property (nonatomic, strong, nullable) LocationInfo * lastLoc;
 
 /**
+ @property errorBlock
  One off error handler.
  
  IMPORTANT: if set this will be automatically reset in a notify error block but it is your responsibility
@@ -242,74 +288,83 @@ typedef void (^errorBlockType)();
 @property (strong, nonatomic, nullable) errorBlockType errorBlock;
 
 /**
+ @property isAuthenticating
  * set while registering or login
  */
 @property(nonatomic) BOOL isAuthenticating;
 
 /**
  Creates and returns an `TESWIApp` object.
+
+ @returns the app object
  */
 
 - (nullable instancetype) init NS_DESIGNATED_INITIALIZER;
 
-
-//----------------------------------------------
-// Core methods
-//--------------------------------------------
 /**
- shared client is a singleton used to make all store related callses
+ * @publicsection
+ *
  */
 
+/**
+ shared client is a singleton used to make all store related calls. First call will create the app
+ object otherwise a reference to it will be returned
 
+ @returns app object.
+ */
 + (nonnull TESWIApp *)manager;
 
 /**
  Start the framework. This initialises location services, boots up the push manager and authenticates with the wi server
- 
- 
- **/
+ This routine will also check for the necessary permissions and prompt the user if necessary.
 
+ requires appropriate location / push / wallet capabilities in the info.plist file.
+
+ NOTE: this should always be passed in launch options as IOS may start the app in response to a location change or push
+ notication - launch options will contain this information.
+
+ @param config the config object
+ @param launchOptions as returned by IOS from the didFinishLaunchingWithOptions calll
+
+ @returns success or failure of starting up
+
+ */
 - (BOOL)start:(nonnull TESConfig *)config withLaunchOptions:(nullable NSDictionary *)launchOptions;
-
 
 /**
  returns whether the user has a valid device token
+
+ @returns true if we have one
  */
 
 - (BOOL) hasDeviceToken;
 
 /**
  returns whether the user has a valid push token
+
+ @returns true if we have one
  */
 - (BOOL) hasPushToken;
 
-
 /**
- * are we authorized
+ are we authorized
+
+ @returns true if we are authorized
+
  */
 - (BOOL) isAuthorized;
 
 /**
- * Clears the set of auth tokens
+ Clears the set of auth tokens
  */
 - (void) clearAuth;
 
 /**
- * register services
- *  NOTE: only needed if you turn on apn or wallet or other device type after calling start
+ register services
+ NOTE: only needed if you turn on apn or wallet or other device type after calling start
  */
 
 - (void)reRegisterServices;
-
-
-// --------------------------
-// remote push nothification
-//----------------------------
-
-- (void) registerRemoteNotificationToken: (nonnull NSData * )deviceToken;
-- (void) didFailToRegisterForRemoteNotificationsWithError: (nullable NSError *) error;
-
-- (void) processRemoteNotification: (nullable NSDictionary*)userInfo;
 
 //-----------------------
 // WIApp API calls
@@ -411,8 +466,30 @@ typedef void (^errorBlockType)();
  */
 
 - (void) sendDeviceUpdate:(nonnull NSArray *)locInfo inBackground: (BOOL) background;
+
+/**
+ Sends a point to the server. Automatically deals with new or existing devices
+
+ @param region the region that triggered the update
+ @param locInfo the location info to update
+ @param background are we running in background atm.
+
+ */
 - (void) sendRegionUpdate: (nonnull CLRegion *) region withLocation:(nonnull LocationInfo *) locInfo inBackground: (BOOL) background;
+
+/**
+ * A change in permission has occured outside of the app
+ * @param status the new permission
+ */
 - (void) sendChangeAuthorizationStatus:(CLAuthorizationStatus)status;
+
+/**
+ * Write an error to the debug log if any and echo it to NSLog
+ *
+ * @param error  the error
+ * @param msg  any message to the error
+ * @param geoError from a region event
+ */
 
 - (void) sendError:(nullable NSError *)error withMsg:(nullable NSString *)msg inGeo:(BOOL)geoError;
 
@@ -579,6 +656,36 @@ typedef void (^errorBlockType)();
  **/
 -(void)readEventImage: (nonnull NSString *)imageId completion:(TESApiCallback) completionBlock;
 
+
+
+/**
+ * @protectedsection
+ *
+ *  remote push nothification
+ */
+
+/***
+ * called when we get a push totken
+ * @param deviceToken
+ */
+- (void) registerRemoteNotificationToken: (nonnull NSData * )deviceToken;
+
+/**
+ * called when we get a fail while registering for notifications
+ * @param error
+ */
+- (void) didFailToRegisterForRemoteNotificationsWithError: (nullable NSError *) error;
+
+/**
+ * Processes an incoming notification
+ * @param userInfo the notification packet
+ */
+
+- (void) processRemoteNotification: (nullable NSDictionary*)userInfo;
+
+/**
+ * @privatesection
+ */
 
 //------------------------------------------------------
 // reads/updates/clears token to the user defaults store

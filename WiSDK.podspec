@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WiSDK'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of WiSDK.'
+  s.version          = '1.2.0'
+  s.summary          = 'Welcome Interruption SDK'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,15 +18,15 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+This Wi SDK allows integration of native mobile apps with the Welcome Interruption (Wi) servers.  It allows for the collecting
+location information from a mobile device to the Wi Servers and allow the receipt of notifications from Wi servers..
                        DESC
 
   s.homepage         = 'https://github.com/pfrantz/WiSDK'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.license          = { :type => 'APACHE', :file => 'LICENSE' }
   s.author           = { 'pfrantz' => 'pfrantz@3-elecric-sheep.com' }
   s.source           = { :git => 'https://github.com/pfrantz/WiSDK.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'
 
