@@ -467,13 +467,14 @@
 
     self.authStatus = status;
 
-    if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusAuthorizedAlways) {
-        // Start the standard location service.
-        [self ensureMonitoring];
-    }
-
     if (self.delegate)
         [self.delegate sendChangeAuthorizationStatus: status];
+    else {
+        if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusAuthorizedAlways) {
+            // Start the standard location service.
+            [self ensureMonitoring];
+        }
+    }
 }
 
 #pragma mark - device server update
