@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WiSDK'
-  s.version          = '1.2.0'
+  s.version          = '1.2.1'
   s.summary          = 'Welcome Interruption SDK'
 
 # This description is used to generate tags and improve search results.
@@ -25,7 +25,7 @@ location information from a mobile device to the Wi Servers and allow the receip
   s.homepage         = 'http://www.welcomeinterruption.com'
   s.license          = { :type => 'APACHE', :file => 'LICENSE' }
   s.author           = { 'pfrantz' => 'pfrantz@3-elecric-sheep.com' }
-  s.source           = { :git => 'https://3es-intergrator:3zrUfjvVBW@github.com/3-electric-sheep/wisdk_ios.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://3es-Integrator:3zrUfjvVBW@github.com/3-electric-sheep/wi-specs.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
 

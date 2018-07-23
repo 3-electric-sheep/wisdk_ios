@@ -40,6 +40,23 @@ Before you begin, ensure that you have CocoaPods installed. If you are having tr
 $ gem install cocoapods
 ```
 
+### Private Repository setup
+WiSDK is available through a private repository to allow access to this repository you need to do the following:-
+
+1. Create the private repository in your cocoa installation
+
+```ruby
+pod repo add wi-specs https://3es-Integrator:3zrUfjvVBW@github.com/3-electric-sheep/wi-specs.git
+
+```
+
+2. Add the source directive at the top of your pos file. This goes to the wi-spec repository then the master cocoapod repository:-
+
+```
+source 'https://3es-Integrator:3zrUfjvVBW@github.com/3-electric-sheep/wi-specs.git'
+source 'https://github.com/CocoaPods/Specs.git'
+```
+
 ### SDK Cocoapod
 WiSDK is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
