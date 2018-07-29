@@ -319,4 +319,4 @@ pfrantz, pfrantz@3-elecric-sheep.com
 
 ## License
 
-WiSDK is available under the Apache license. See the LICENSE file for more info.
+WiSDK is available under the Welcome Interruption SDK License. See the LICENSE file for more info.
