@@ -179,13 +179,91 @@ sensitivty of geo regions monitored, how users and devices are created and the t
     config.authAutoAuthenticate = YES;
     config.authCredentials = @{
            @"anonymous_user": @YES,
-           @"external_id:: ”1234567890”,  // external system user/member id
+           @"external_id:: @”1234567890”,  // external system user/member id
     };
     config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
     config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es
 
 ```
+
+if you want to add user specific information you can also ammend the authCredentials section of the config data with the following fields:-
+
+* email =  email for the device
+* password = password (only supported if anonymous_user is false)
+* first_name = users first name
+* last_name = users last name
+* profile_image = url of profile image
+
+If interfacing to an external system you can also enter
+
+* external_id - any string value (should be unique)
+* program_attr - a dictionary of name value pairs - only available if a program is setup for a provider
+
+```objective-c
+
+    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
+    config.authAutoAuthenticate = YES;
+    config.authCredentials = @{
+        @"anonymous_user": @YES,
+        @"email": @"test@acme.com",
+        @"first_name": @"Test",
+        @"last_name": @"User",
+        @"external_id:: @”1234567890”,  // external system user/member id
+        @"program_attr": @{
+             @"name": @"3esCampaignDemo",
+             @"gender": @"F",
+             @"DOB": @"1964-12-04"
+        }
+    };
+```
+
+if you need to get / update the user details after the user has been created and authenticated you can use the following api calls
+
+```objective-c
+
+-(void) getAccountProfile: (TESApiCallback) completionBlock;
+-(void) updateAccountProfile: (nullable NSDictionary *)params onCompletion:(TESApiCallback) completionBlock;
+
+```
+
+Both of these calls make an async network call and will return a JSON result dictionary signifying success or failure. An example on usage follows:-
+
+```objective-c
+
+    NSDictionary * params = @{
+        @"email": @"test@acme.com",
+        @"first_name": @"Test",
+        @"last_name": @"User",
+        @"external_id": @"666123666",
+        @"program_attr": @{
+             @"name": @"3esCampaignDemo",
+             @"gender": @"F",
+             @"DOB": @"1964-12-04"
+        }
+    };
+    [wiapp updateAccountProfile:params onCompletion:^ void (TESCallStatus  status, NSDictionary * _Nullable result) {
+        switch (status) {
+            case TESCallSuccessOK: {
+                NSString *data = [result valueForKey:@"data"];
+                break;
+            }
+            case TESCallSuccessFAIL: {
+                NSNumber *code = [result valueForKey:@"code"];
+                NSString *msg = [result valueForKey:@"msg"];
+                break;
+            }
+            case TESCallError: {
+                NSString *msg = [result valueForKey:@"msg"];
+                break;
+            }
+        }
+    }];
+
+
+```
+
+NOTE: these calls will fail unless you have successfully authenticated with the system
 
 
 ### Listeners
@@ -254,6 +332,101 @@ notification management and all sorts of communication to/from the Wi Servers.
 
 NOTE: start asks for necessary permissions, registers push tokens and uses https to authenticate and communicate with the WI servers. It is asyncrohnous and
 in nature.
+
+### Push notification format
+
+A push notification is created when a device enter in an active radius of an events geofence.  The event detail determines
+the layout of the push notification and what fields are returned as part of the push notification.
+
+The event fields support customisation in 2 ways :-
+
+* by template substition (for most string fields)
+* by plugin integrations (requires server development and is used to inteface directly to back end systems)
+
+#### Templates
+Template substitution allows for special field inserts to be added to most text fields. At runtime the field inserts
+are substituted with the device details (as setup in config or by calling the updateAccountProfile api call). The following
+field inserts are supported:-
+
+* user_name
+* email
+* first_name
+* last_name
+* full_name
+* external_id
+* All program defined field as per provider program
+
+The following items in an event are templatable:-
+
+ * title
+ * detail
+ * extract
+ * media_external_url
+ * media_thumbnail_url
+ * notification_channel
+ * offer_code
+
+ To specify a insert in one of these field simply wrap the field insert around {}
+ eg.  To add first name to the media url you would write something like this:-
+
+> ‘https://x.y.z/videoxxx?name={first_name}
+
+if first_name for the device was set to Phillip then it would resolve to:-
+
+> https://x.y.z/videoxxx?name=Phillip)
+
+On IOS, the following fields are special:-
+
+* notification_channel will be translated to *category*  in the apn section of the notification
+* media_external_url will cause the *mutable-content* flag to be set in the apn section of the notification
+
+
+#### Plugins
+Plugin integration are outside of the scope of this document but allow much flexibilty in modifying an events detail for
+individual devices.
+
+A plugin can be used to
+
+* add integration spectific items to an event record
+* custom an event for each device so its notification is unique
+* communicate with a back end system at event creation and device notification
+* allow for backend systems to call back to wi.
+
+#### push format
+The payload for a push notification on android is is divided into a notification section and data section.
+
+An example follows:-
+
+```json
+    {
+      'aps': {
+        'alert': ‘A notification\r\nThis is a test notification',
+        'sound': 'default'
+        'mutable-content': 1,
+        'category': 'WiCategoryPush',
+      },
+      'event-id': '5b9a0b36f26f9f7104cd089c',
+      'type': 'deal',
+      'title': 'A notification',
+      'detail': 'This is a test notification',
+      'event-category': 'General',
+      'further-info': '',
+      'starts': '2018-09-13T07:00:00+0000',
+      'expires': '2018-09-13T08:00:00+0000',
+      'broadcast-band': 'auto',
+      'poi-id': '5b5ea71bf26f9fffdf92058e',
+      'poi-lng': 144.52037359999997,
+      'poi-lat': -37.36093909999999,
+      'enactable': False,
+      'provider-id': '5b5ea71bf26f9fffdf92058d',
+      'media-external-url': 'https://www.youtube.com/watch?v=xLCn88bfW1o',
+      'media-thumbnail-url': 'http://i3.ytimg.com/vi/xLCn88bfW1o/maxresdefault.jpg',
+      'notification-channel': 'WiCategoryPush',
+      'event-history-id': '5b9a0b36f26f9f7104cd089b',
+      'event-group-id': 'bf059e8d-06cd-400d-ac99-cfddfc0aa88c'
+    }
+
+```
 
 ### Using thie API
 
