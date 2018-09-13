@@ -399,31 +399,31 @@ An example follows:-
 
 ```json
     {
-      'aps': {
-        'alert': ‘A notification\r\nThis is a test notification',
-        'sound': 'default'
-        'mutable-content': 1,
-        'category': 'WiCategoryPush',
+      "aps": {
+        "alert": "A notification\r\nThis is a test notification",
+        "sound": "default"
+        "mutable-content": 1,
+        "category": "WiCategoryPush",
       },
-      'event-id': '5b9a0b36f26f9f7104cd089c',
-      'type': 'deal',
-      'title': 'A notification',
-      'detail': 'This is a test notification',
-      'event-category': 'General',
-      'further-info': '',
-      'starts': '2018-09-13T07:00:00+0000',
-      'expires': '2018-09-13T08:00:00+0000',
-      'broadcast-band': 'auto',
-      'poi-id': '5b5ea71bf26f9fffdf92058e',
-      'poi-lng': 144.52037359999997,
-      'poi-lat': -37.36093909999999,
-      'enactable': False,
-      'provider-id': '5b5ea71bf26f9fffdf92058d',
-      'media-external-url': 'https://www.youtube.com/watch?v=xLCn88bfW1o',
-      'media-thumbnail-url': 'http://i3.ytimg.com/vi/xLCn88bfW1o/maxresdefault.jpg',
-      'notification-channel': 'WiCategoryPush',
-      'event-history-id': '5b9a0b36f26f9f7104cd089b',
-      'event-group-id': 'bf059e8d-06cd-400d-ac99-cfddfc0aa88c'
+      "event-id": "5b9a0b36f26f9f7104cd089c",
+      "type": "deal",
+      "title": "A notification",
+      "detail": "This is a test notification",
+      "event-category": "General",
+      "further-info": "",
+      "starts": "2018-09-13T07:00:00+0000",
+      "expires": "2018-09-13T08:00:00+0000",
+      "broadcast-band": "auto",
+      "poi-id": "5b5ea71bf26f9fffdf92058e",
+      "poi-lng": 144.52037359999997,
+      "poi-lat": -37.36093909999999,
+      "enactable": False,
+      "provider-id": "5b5ea71bf26f9fffdf92058d",
+      "media-external-url": "https://www.youtube.com/watch?v=xLCn88bfW1o",
+      "media-thumbnail-url": "http://i3.ytimg.com/vi/xLCn88bfW1o/maxresdefault.jpg",
+      "notification-channel": "WiCategoryPush",
+      "event-history-id": "5b9a0b36f26f9f7104cd089b",
+      "event-group-id": "bf059e8d-06cd-400d-ac99-cfddfc0aa88c"
     }
 
 ```
