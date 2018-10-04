@@ -539,6 +539,17 @@ typedef void (^errorBlockType)();
                   onCompletion:(TESApiCallback) completionBlock;
 
 /**
+ List all followed live events
+
+ @param params Parameters to the list live events call
+ @param listener the code block to call on successful completion
+ **/
+
+- (void) listAlertedEvents: (nullable NSDictionary *)params
+              onCompletion:(TESApiCallback)completionBlock;
+
+
+/**
  
  update the event acknoledge flag for an event
  

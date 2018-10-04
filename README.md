@@ -401,7 +401,7 @@ An example follows:-
     {
       "aps": {
         "alert": "A notification\r\nThis is a test notification",
-        "sound": "default"
+        "sound": "default",
         "mutable-content": 1,
         "category": "WiCategoryPush",
       },
@@ -417,7 +417,7 @@ An example follows:-
       "poi-id": "5b5ea71bf26f9fffdf92058e",
       "poi-lng": 144.52037359999997,
       "poi-lat": -37.36093909999999,
-      "enactable": False,
+      "enactable": false,
       "provider-id": "5b5ea71bf26f9fffdf92058d",
       "media-external-url": "https://www.youtube.com/watch?v=xLCn88bfW1o",
       "media-thumbnail-url": "http://i3.ytimg.com/vi/xLCn88bfW1o/maxresdefault.jpg",

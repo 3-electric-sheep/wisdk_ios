@@ -13,19 +13,29 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#ifdef DEBUG
+    NSString * PROVIDER_KEY = @"5bb54bd58f3f541552dd0097"; // wi_test wisdk demo provider
+#endif
+#ifndef DEBUG
     NSString * PROVIDER_KEY = @"5b53e675ec8d831eb30242d3"; // the wisdk-example account (user is wisdk@3-electric-sheep.com)
+#endif
+
     TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
     config.authAutoAuthenticate = YES;
     config.authCredentials = @{
            @"anonymous_user": @YES,
+           @"external_id": @"123456"
     };
-    config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
+
+    config.deviceTypes = deviceTypeAPN | deviceTypePassive;
     
 #ifdef DEBUG
+    config.environment = @"test";
     config.testPushProfile = @"wisdk-example-aps-dev";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-dev"; // prod profile name (allocated by 3es)
 #endif
 #ifndef DEBUG
+    config.environment = @"prod";
     config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es)
 #endif
@@ -62,6 +72,9 @@
 
 - (void)processRemoteNotification:(nullable NSDictionary *)userDictionary {
     NSLog(@"--> processRemoteNotification %@", userDictionary);
+    TESWIApp * app = [TESWIApp manager];
+    NSString * eventId = userDictionary[@"event_id"];
+    [app updateEventAck:eventId isAck:YES onCompletion:nil];
 }
 
 - (void)onRemoteNoficiationRegister:(TESCallStatus)status withResponse:(nonnull NSDictionary *)responseObeject {

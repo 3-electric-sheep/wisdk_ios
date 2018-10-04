@@ -32,6 +32,7 @@
 #define TES_PATH_LIVE_EVENTS_REVIEWS @"live-events/%@/reviews"
 #define TES_PATH_LIVE_EVENTS_CREATE_REVIEW @"live-events/%@/reviews"
 #define TES_PATH_EVENTS_REVIEWS @"events/%@/reviews"
+#define TES_PATH_EVENTS_ALERTED @"/geodevice/%@/alerted-events"
 
 #define TES_PATH_SEARCH_LIVE_EVENTS @"geopos/%f,%f/live-events"
 
@@ -648,6 +649,14 @@
         [pushTargets addObject:pushInfo];
     }
 
+    if (self.config.deviceTypes & deviceTypePassive){
+        pushInfo = [[PushInfo alloc] init];
+        pushInfo.pushToken = @"virtual";
+        pushInfo.pushType = DEVICE_TYPE_PASSIVE;
+        pushInfo.pushProfile = @"";
+        [pushTargets addObject:pushInfo];
+    }
+
     NSInteger tgtCount = [pushTargets count];
     if (tgtCount == 1) {
         // setup the push token if its new or we are a new device.
@@ -727,6 +736,11 @@
 
 - (void)listFollowedLiveEvents:(nullable NSDictionary *)params onCompletion:(TESApiCallback)completionBlock {
     [self.api call:@"GET" url:TES_PATH_LIST_LIVE_EVENTS_FOLLOW parameters:params auth:YES completionHandler:completionBlock];
+}
+
+- (void) listAlertedEvents: (nullable NSDictionary *)params onCompletion:(TESApiCallback)completionBlock {
+    NSString * path = [[NSString alloc] initWithFormat:TES_PATH_EVENTS_ALERTED, self.deviceToken];
+            [self.api call:@"GET" url:path parameters:params auth:YES completionHandler:completionBlock];
 }
 
 - (void)updateEventAck:(nonnull NSString *)eventId isAck:(BOOL)ack onCompletion:(TESApiCallback)completionBlock {

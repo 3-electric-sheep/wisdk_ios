@@ -32,7 +32,7 @@
 #define PROD_SERVER @"https://api.3-electric-sheep.com"
 #define PROD_PUSH_PROFILE @"wi-aps-prod"
 
-#define TEST_SERVER @"http://test.3-electric-sheep.com"
+#define TEST_SERVER @"https://testapi.3-electric-sheep.com"
 #define TEST_PUSH_PROFILE @"wi-aps-dev"
 
 #define WALLET_OFFER_CLASS @"wioffers_pass"
@@ -48,6 +48,7 @@
 #define DEVICE_TYPE_SMS  @"sms"
 #define DEVICE_TYPE_WALLET  @"pkpass"
 #define DEVICE_TYPE_MULTIPLE @"multiple"
+#define DEVICE_TYPE_PASSIVE @"passive"
 
 /**
  * @class TESConfig TESConfig.h "WiSDK/TESonfig.h"
@@ -65,7 +66,8 @@ typedef NS_OPTIONS(NSUInteger, DevicePushTargets
     deviceTypeAPN = 1 << 0,
     deviceTypeWallet = 1 << 1,
     deviceTypeMail = 1 << 2,
-    deviceTypeSms = 1 << 3
+    deviceTypeSms = 1 << 3,
+    deviceTypePassive = 1 << 4
 };
 
 /**
