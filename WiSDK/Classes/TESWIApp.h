@@ -119,7 +119,7 @@ typedef void (^errorBlockType)();
  * at the end of start or if you are unauthorized, at the end of the authorize process
  * regardless of whehter you are authorized or not.
  *
- * @param isAuthorized - returns whether we are successfully authorized or not
+ * @param authorized - returns whether we are successfully authorized or not
  */
 - (void) onStartupComplete: (BOOL) authorized;
 
@@ -550,7 +550,7 @@ typedef void (^errorBlockType)();
  List all alerted live events
 
  @param params Parameters to the list live events call
- @param listener the code block to call on successful completion
+ @param completionBlock the code block to call on successful completion
  **/
 
 - (void) listAlertedEvents: (nullable NSDictionary *)params
@@ -686,13 +686,13 @@ typedef void (^errorBlockType)();
 
 /***
  * called when we get a push totken
- * @param deviceToken
+ * @param deviceToken token registered
  */
 - (void) registerRemoteNotificationToken: (nonnull NSData * )deviceToken;
 
 /**
  * called when we get a fail while registering for notifications
- * @param error
+ * @param error error from failed register
  */
 - (void) didFailToRegisterForRemoteNotificationsWithError: (nullable NSError *) error;
 

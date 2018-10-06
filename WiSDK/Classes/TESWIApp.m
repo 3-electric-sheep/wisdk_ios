@@ -178,7 +178,7 @@
              if (self.delegate && [self.delegate respondsToSelector:@selector(onAutoAuthenticate:withResponse:)]){
                  [self.delegate onAutoAuthenticate:status withResponse:responseObject];
              }
-             if (self.delegate && [self.delegate respondsToSelector:@selector(onStartupComplet:)]){
+             if (self.delegate && [self.delegate respondsToSelector:@selector(onStartupComplete:)]){
                  [self.delegate onStartupComplete:self.isAuthorized];
              }
         }];
