@@ -30,15 +30,17 @@
     config.deviceTypes = deviceTypeAPN | deviceTypePassive;
     
 #ifdef DEBUG
-    config.environment = @"test";
+    config.environment = TES_ENV_TEST;
     config.testPushProfile = @"wisdk-example-aps-dev";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-dev"; // prod profile name (allocated by 3es)
 #endif
 #ifndef DEBUG
-    config.environment = @"prod";
+    config.environment = TES_ENV_PROD;
     config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es)
 #endif
+
+    config.singleLocationFix = YES;
 
     TESWIApp * app = [TESWIApp manager];
     app.delegate = self;
@@ -49,6 +51,72 @@
 }
 
 #pragma mark - TESWiAppDelegate
+
+-(void)onStartupComplete:(BOOL)authorized{
+    NSLog(@"--> Startup complete: %ld", (long) authorized);
+    if (authorized){
+        TESWIApp * app = [TESWIApp manager];
+
+        NSDictionary * params = @{
+                @"email": @"demo-2@3es.com",
+                @"first_name": @"Demo",
+                @"last_name": @"User",
+                @"external_id": @"666123666",
+                @"attributes": @{
+                        @"Gender":@"Male",
+                        @"DOB": @"1939-12-04"
+                }
+
+        };
+        [app updateAccountProfile:params onCompletion:^ void (TESCallStatus  status, NSDictionary * _Nullable result) {
+            switch (status) {
+                case TESCallSuccessOK: {
+                    NSString *data = [result valueForKey:@"data"];
+                    NSLog(@"updateAccountProfile Success %@", data);
+                    break;
+                }
+                case TESCallSuccessFAIL: {
+                    NSNumber *code = [result valueForKey:@"code"];
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"updateAccountProfile Fail %d %@", code, msg);
+                    break;
+                }
+                case TESCallError: {
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"updateAccountProfile Network %@", msg);
+                    break;
+                }
+            }
+        }];
+
+        params = @{
+            @"relative_start":@"20d"
+        };
+
+        [app listAlertedEvents:params onCompletion:^ void (TESCallStatus  status, NSDictionary * _Nullable result) {
+            switch (status) {
+                case TESCallSuccessOK: {
+                    NSString *data = [result valueForKey:@"data"];
+                    NSLog(@"ListtAlerted Success %@", data);
+                    break;
+                }
+                case TESCallSuccessFAIL: {
+                    NSNumber *code = [result valueForKey:@"code"];
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"ListtAlerted Fail %d %@", code, msg);
+                    break;
+                }
+                case TESCallError: {
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"ListtAlerted Network %@", msg);
+                    break;
+                }
+            }
+        }];
+
+    }
+}
+
 
 - (void)authorizeFailure:(NSInteger)httpStatus {
     NSLog(@"--> Authorize failure: %ld", (long) httpStatus);
@@ -72,9 +140,6 @@
 
 - (void)processRemoteNotification:(nullable NSDictionary *)userDictionary {
     NSLog(@"--> processRemoteNotification %@", userDictionary);
-    TESWIApp * app = [TESWIApp manager];
-    NSString * eventId = userDictionary[@"event_id"];
-    [app updateEventAck:eventId isAck:YES onCompletion:nil];
 }
 
 - (void)onRemoteNoficiationRegister:(TESCallStatus)status withResponse:(nonnull NSDictionary *)responseObeject {

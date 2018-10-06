@@ -46,13 +46,13 @@ WiSDK is available through a private repository to allow access to this reposito
 1. Create the private repository in your cocoa installation
 
 ```ruby
-pod repo add wi-specs https://3es-Integrator:3zrUfjvVBW@github.com/3-electric-sheep/wi-specs.git
+pod repo add wi-specs https://github.com/3-electric-sheep/wi-specs.git
 ```
 
 2. Add the source directive at the top of your pos file. This goes to the wi-spec repository then the master cocoapod repository:-
 
 ```
-source 'https://3es-Integrator:3zrUfjvVBW@github.com/3-electric-sheep/wi-specs.git'
+source 'https://github.com/3-electric-sheep/wi-specs.git'
 source 'https://github.com/CocoaPods/Specs.git'
 ```
 
@@ -138,15 +138,17 @@ A minimal integration is just include the TESWiApp.h header and adding code to t
     config.authCredentials = @{
            @"anonymous_user": @YES,
     };
-    config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
+    config.deviceTypes = deviceTypeAPN | deviceTypePassive;
 
     // IOS has the concept of production and developement APNS servers - we need to ensure the right keys
     // are setup if we are running in debug mode or production mode.
 #ifdef DEBUG
+    config.environment = TES_ENV_TEST;
     config.testPushProfile = @"wisdk-example-aps-dev";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-dev"; // prod profile name (allocated by 3es)
 #endif
 #ifndef DEBUG
+    config.environment = TES_ENV_PROD;
     config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
     config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es)
 #endif
@@ -210,10 +212,9 @@ If interfacing to an external system you can also enter
         @"first_name": @"Test",
         @"last_name": @"User",
         @"external_id:: @”1234567890”,  // external system user/member id
-        @"program_attr": @{
-             @"name": @"3esCampaignDemo",
-             @"gender": @"F",
-             @"DOB": @"1964-12-04"
+        @"attributes": @{
+            @"Gender":@"Male",
+            @"DOB": @"1939-12-04"
         }
     };
 ```
@@ -224,7 +225,6 @@ if you need to get / update the user details after the user has been created and
 
 -(void) getAccountProfile: (TESApiCallback) completionBlock;
 -(void) updateAccountProfile: (nullable NSDictionary *)params onCompletion:(TESApiCallback) completionBlock;
-
 ```
 
 Both of these calls make an async network call and will return a JSON result dictionary signifying success or failure. An example on usage follows:-
@@ -236,10 +236,9 @@ Both of these calls make an async network call and will return a JSON result dic
         @"first_name": @"Test",
         @"last_name": @"User",
         @"external_id": @"666123666",
-        @"program_attr": @{
-             @"name": @"3esCampaignDemo",
-             @"gender": @"F",
-             @"DOB": @"1964-12-04"
+        @"attributes": @{
+            @"Gender":@"Male",
+            @"DOB": @"1939-12-04"
         }
     };
     [wiapp updateAccountProfile:params onCompletion:^ void (TESCallStatus  status, NSDictionary * _Nullable result) {
@@ -283,6 +282,13 @@ this protocol is defined in WiSDK/TESWiApp.h as follows:-
     - (void) authorizeFailure: (NSInteger) httpStatus;
 
     @@optional
+    /*
+     * Called when starup is complete and you have successfully been authorized. Will
+     * at the end of start or if you are unauthorized, at the end of the authorize process
+     * regardless of whehter you are authorized or not.
+     *
+     */
+    - (void) onStartupComplete: (BOOL) authorized;
 
     /*
      sent when authorization is complete
@@ -332,6 +338,50 @@ notification management and all sorts of communication to/from the Wi Servers.
 
 NOTE: start asks for necessary permissions, registers push tokens and uses https to authenticate and communicate with the WI servers. It is asyncrohnous and
 in nature.
+
+If you have defined an TESWIAppDelegate interface you can use the onStartupComplete callback to do processing once WI has authenticated with our servers
+An example follows where user details are set
+
+```objective-c
+-(void)onStartupComplete:(BOOL)authorized{
+    NSLog(@"--> Startup complete: %ld", (long) authorized);
+    if (authorized){
+        TESWIApp * app = [TESWIApp manager];
+
+        NSDictionary * params = @{
+                @"email": @"demo-2@3es.com",
+                @"first_name": @"Demo",
+                @"last_name": @"User",
+                @"external_id": @"666123666",
+                @"attributes": @{
+                        @"Gender":@"Male",
+                        @"DOB": @"1939-12-04"
+                }
+
+        };
+        [app updateAccountProfile:params onCompletion:^ void (TESCallStatus  status, NSDictionary * _Nullable result) {
+            switch (status) {
+                case TESCallSuccessOK: {
+                    NSString *data = [result valueForKey:@"data"];
+                    NSLog(@"updateAccountProfile Success %@", data);
+                    break;
+                }
+                case TESCallSuccessFAIL: {
+                    NSNumber *code = [result valueForKey:@"code"];
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"updateAccountProfile Fail %d %@", code, msg);
+                    break;
+                }
+                case TESCallError: {
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"updateAccountProfile Network %@", msg);
+                    break;
+                }
+            }
+        }]
+     }
+}
+```
 
 ### Push notification format
 
@@ -468,12 +518,160 @@ Ensure that in the capabilites you have
 * Wallet services enabled (optional if you want to support wallet services)
 * Background services - and tick allow remote notifications
 
-** NOTE: do NOT tick allow background location as this will drain battery very quickly.
+** NOTE: do **NOT** tick allow background location as this will drain battery very quickly.
 
 ## API documentation
 
-For further API documentation, clone the repo and open the doc/html/index.html file
+### User management
+```objective-c
+-(void) registerUser:(nullable NSDictionary *) params
+          completion:(TESApiCallback) completionBlock;
 
+-(void) loginUser:(nullable NSDictionary *) params
+       completion:(TESApiCallback) completionBlock;
+```
+
+### Account profile calls
+```objective-c
+
+ -(void) getAccountProfile: (TESApiCallback) completionBlock;
+
+ -(void) updateAccountProfile: (nullable NSDictionary *)params
+                 onCompletion:(TESApiCallback) completionBlock;
+
+ -(void) updateAccountProfilePassword: (nonnull NSString *) password
+                          oldPassword: (nonnull NSString *) oldPassword
+                          onCompletion:(TESApiCallback) completionBlock;
+
+ -(void) updateAccountSettings:(nullable NSDictionary *)params
+                  onCompletion:(TESApiCallback) completionBlock;
+
+ -(void)uploadImageForProfile: (nonnull UIImage *) image
+                   completion:(TESApiCallback) completionBlock;
+
+ -(void) readProfileImage: (TESApiCallback) completionBlock;
+
+```
+
+### Event details
+```objective-c
+ -(void) listLiveEvents: (nullable NSDictionary *)params
+           onCompletion:(TESApiCallback) completionBlock;
+
+ -(void) listSearchEvents: (nullable NSDictionary *)params
+             withlocation: (CLLocationCoordinate2D) location
+             onCompletion:(TESApiCallback) completionBlock;
+
+  -(void) listAcknowledgedLiveEvents: (nullable NSDictionary *)params
+                       onCompletion:(TESApiCallback) completionBlock;
+
+  -(void) listFollowedLiveEvents: (nullable NSDictionary *)params
+                   onCompletion:(TESApiCallback) completionBlock;
+
+  - (void) listAlertedEvents: (nullable NSDictionary *)params
+               onCompletion:(TESApiCallback)completionBlock;
+```
+#### List Alerted Events
+List all alerted live events for this device. A list of events are returned in the data field of the result JSON.
+
+```
+- (void) listAlertedEvents: (nullable NSDictionary *)params
+              onCompletion:(TESApiCallback)completionBlock;
+```
+
+Parameter Name | Description
+-----------| -----------
+params | Optional filters to apply to the list live events call
+listener | the code block to call on successful completion
+
+Valid key / value filters for this call are:-
+
+Field | Value
+------|------
+notification_type |type of notification since a device can have multiple push targets. Valid values are:-<br/><ul><li>'apn' - apple push notification</li><li>'gcm' - google cloud message<li>'mail' - email</li><li>'sms' - sms</li><li>'test' - test</li><li>'pkpass' - apple wallet</li><li>'ap' - google wallet</li><li>'passive' - a virtual push (for people that don't want to set notification on)</li><br>
+pending| Whether the alert is pending true/false (default true)
+relative_start| the relative start date to get events from. This can be a number suffixed by d (days) h (hours) m (minutes) s (sections) - eg. 20d - give me the events for the last 20 days
+start|start record for results (default = 0)
+limit|number of records to return (default = -1 - all)
+sort_field|sort on field (default = alerted)
+sort_desc|sort decending (default = True)
+
+
+An example to return all events in last 20 days is given below
+
+```
+        NSDictionary * params = @{
+            @"relative_start":@"20d"
+        };
+
+        [app listAlertedEvents:params onCompletion:^ void (TESCallStatus  status, NSDictionary * _Nullable result) {
+            switch (status) {
+                case TESCallSuccessOK: {
+                    NSString *data = [result valueForKey:@"data"];
+                    NSLog(@"ListtAlerted Success %@", data);
+                    break;
+                }
+                case TESCallSuccessFAIL: {
+                    NSNumber *code = [result valueForKey:@"code"];
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"ListtAlerted Fail %d %@", code, msg);
+                    break;
+                }
+                case TESCallError: {
+                    NSString *msg = [result valueForKey:@"msg"];
+                    NSLog(@"ListtAlerted Network %@", msg);
+                    break;
+                }
+            }
+        }];
+```
+
+### Updating event status
+
+```objective-c
+ -(void) updateEventAck: (nonnull NSString *) eventId
+                  isAck: (BOOL) ack
+           onCompletion:(TESApiCallback) completionBlock;
+
+ -(void) updateEventEnacted: (nonnull NSString *) eventId
+                  isEnacted: (BOOL) enacted
+               onCompletion:(TESApiCallback) completionBlock;
+```
+
+### Provider details
+```objective-c
+ -(void) getProvider:(TESApiCallback) completionBlock;
+ -(void) listPlacesOfInterestForProvider: (nullable NSDictionary *)params onCompletion:(TESApiCallback) completionBlock;
+ -(void) listLiveEventsForProvider: (nullable NSDictionary *)params onCompletion: (TESApiCallback) completionBlock;
+ -(void) listEventsForProvider: (nullable NSDictionary *)params onCompletion: (TESApiCallback) completionBlock;
+```
+
+### Event filtering
+```objective-c
+- (nullable NSDictionary *) getExclusions;
+- (void) excludeEventType: (nonnull NSString *) exc_type andCategory: (nullable NSString *) exc_cat withCompletion:(TESApiCallback) completionBlock;
+- (void) includeEventType: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat withCompletion:(TESApiCallback) completionBlock;
+
+- (void) allowNotifyEventType: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat withCompletion:(TESApiCallback) completionBlock;
+- (void) disallowNotifyEventType: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat withCompletion:(TESApiCallback) completionBlock;
+- (BOOL) isAllowNotify: (nonnull NSString *) evt_type andCategory: (nullable NSString *) evt_cat;
+
+- (BOOL) isFollowingPoi: (nonnull NSString *) rid;
+- (void) addFollowPoi: (nonnull NSString *) rid  withCompletion:(TESApiCallback) completionBlock;
+- (void) removeFollowPoi: (nonnull NSString *) rid withCompletion:(TESApiCallback) completionBlock;
+
+- (nullable NSArray *) getWatchZones;
+- (nullable NSDictionary *) getWatchZoneNamed: (nonnull NSString *) name;
+- (nullable NSDictionary *) findZone: (nonnull NSString *) name fromZones: (nullable NSArray *) watchZones;
+- (BOOL) addWatchZoneNamed: (nonnull NSString *) name
+              withDistance: (nonnull NSNumber *) distance
+              fromLocation: (nonnull NSString *) location
+               atLongitude: (CLLocationDegrees) longitude
+               andLatitude: (CLLocationDegrees) latitude
+               oldZoneInfo: (nullable NSDictionary *) oldZoneInfo
+            withCompletion:(TESApiCallback) completionBlock;
+- (void) removeWatchZonenamed: (nonnull NSString *) name  withCompletion:(TESApiCallback) completionBlock;
+```
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first. This example is useful as it has a

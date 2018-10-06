@@ -114,6 +114,14 @@ typedef void (^errorBlockType)();
 - (void) authorizeFailure: (NSInteger) httpStatus;
 
 @optional
+/**
+ * Called when starup is complete and you have successfully been authorized. Will
+ * at the end of start or if you are unauthorized, at the end of the authorize process
+ * regardless of whehter you are authorized or not.
+ *
+ * @param isAuthorized - returns whether we are successfully authorized or not
+ */
+- (void) onStartupComplete: (BOOL) authorized;
 
 /**
   sent when authorization is complete
@@ -539,7 +547,7 @@ typedef void (^errorBlockType)();
                   onCompletion:(TESApiCallback) completionBlock;
 
 /**
- List all followed live events
+ List all alerted live events
 
  @param params Parameters to the list live events call
  @param listener the code block to call on successful completion

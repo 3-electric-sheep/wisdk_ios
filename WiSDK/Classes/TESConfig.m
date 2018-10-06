@@ -27,6 +27,9 @@
 #define LOC_DESIRED_ACCURACY kCLLocationAccuracyHundredMeters // 100m good enough
 #define LOC_STALE_LOCATION_THRESHOLD 300 // 5*60 - 300 seconds
 
+NSString * const TES_ENV_TEST = ENV_TEST;
+NSString * const TES_ENV_PROD = ENV_PROD;
+
 @implementation TESConfig
 
 #pragma mark - Init
@@ -81,6 +84,9 @@
         // use system native auth
         self.nativeRequestAuth = NO;
 
+        // set single location fix
+        self.singleLocationFix = NO;
+
     }
     return self;
 }
@@ -132,6 +138,8 @@
     if (dict[@"geoRadius"])self.geoRadius = [dict[@"geoRadius"] floatValue];
 
     if (dict[@"nativeRequestAuth"])self.nativeRequestAuth = [dict[@"nativeRequestAuth"] boolValue];
+
+    if (dict[@"singleLocationFix"]) self.singleLocationFix = [dict[@"singleLocationFix"] boolValue];
 }
 
 @end

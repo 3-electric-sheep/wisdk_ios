@@ -36,7 +36,8 @@
         self.backgroundMonitoring = NO;
         self.foregroundMonitoring = NO;
         self.visitMonitoring = NO;
-        self.locationFixOnly = NO;
+
+        self.locationFixOnly = self.config.singleLocationFix;
 
         self.locationManager = nil;
         self.lastLocation = nil;
@@ -384,7 +385,8 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    // if we are after a location fix only, just monitor till we get a fix thats less than 5 min old.
+    // if we are after a location fix only, just monitor till we get a fix thats less than 5 min old,
+    //
     if (self.locationFixOnly && self.foregroundMonitoring){
         CLLocation * newLocation = [locations lastObject];
         [self writeDebugInfo: manager newLocation:newLocation];
@@ -396,8 +398,8 @@
             if (self.foregroundMonitoring){
                 [self stopForegroundMonitoring];
             }
+            return;
         }
-        return;
     }
     
     // write all locations to the server

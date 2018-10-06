@@ -50,6 +50,9 @@
 #define DEVICE_TYPE_MULTIPLE @"multiple"
 #define DEVICE_TYPE_PASSIVE @"passive"
 
+
+extern NSString * const TES_ENV_TEST;
+extern NSString * const TES_ENV_PROD;
 /**
  * @class TESConfig TESConfig.h "WiSDK/TESonfig.h"
  Configuration options for the WiApp object
@@ -250,6 +253,13 @@ typedef NS_OPTIONS(NSUInteger, DevicePushTargets
  * Geofence radius in meters
  */
 @property (nonatomic) double geoRadius;
+
+/**
+ * @ singleLocationFix
+ * Only get a single location fix in foreground then stop foreground location monitoring (default NO)
+ */
+
+@property (nonatomic) BOOL singleLocationFix;
 
 /**
  * Initialises a config object with defaults

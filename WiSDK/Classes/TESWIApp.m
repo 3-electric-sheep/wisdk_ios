@@ -126,6 +126,8 @@
 #pragma mark - visible routines
 
 - (BOOL)start:(nonnull TESConfig *)config withLaunchOptions:(nullable NSDictionary *)launchOptions {
+    BOOL deferOnComplete = NO;
+
     self.config = config;
     
     // setup the managers
@@ -171,9 +173,13 @@
 
     // we self authenticate and pass on the result to any delgate implementing this routine.
     if (!self.isAuthorized && self.config.authAutoAuthenticate){
+        deferOnComplete = YES;
         [self authenticate:self.config.authCredentials completion:^(TESCallStatus status, NSDictionary * responseObject){
              if (self.delegate && [self.delegate respondsToSelector:@selector(onAutoAuthenticate:withResponse:)]){
                  [self.delegate onAutoAuthenticate:status withResponse:responseObject];
+             }
+             if (self.delegate && [self.delegate respondsToSelector:@selector(onStartupComplet:)]){
+                 [self.delegate onStartupComplete:self.isAuthorized];
              }
         }];
     }
@@ -191,6 +197,10 @@
             if (self.isAuthorized)
                 [self.locMgr ensureMonitoring];
         }
+    }
+
+    if (!deferOnComplete && self.delegate && [self.delegate respondsToSelector:@selector(onStartupComplete:)]){
+        [self.delegate onStartupComplete:self.isAuthorized];
     }
     return YES;
 }
@@ -233,6 +243,8 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(processRemoteNotification:)]){
         [self.delegate processRemoteNotification:userInfo];
     }
+    NSString * eventId = userInfo[@"event_id"];
+    [self updateEventAck:eventId isAck:YES onCompletion:nil];
 
 }
 
