@@ -47,12 +47,13 @@
 
 #define TES_PATH_LIVE_EVENTS_RUD @"live-events/%@"
 #define TES_PATH_EVENTS_RUD @"events/%@"
-#define TES_PATH_LIVE_EVENTS_ACK @"live-events/%@/ack"
-#define TES_PATH_LIST_LIVE_EVENTS_ACK @"live-events/acknowledged"
-#define TES_PATH_LIST_LIVE_EVENTS_FOLLOW @"live-events/following"
 
-#define TES_PATH_LIVE_EVENTS_ENACTED  @"live-events/%@/enact"
-#define TES_PATH_LIVE_EVENTS_SHARE @"live-events/%@/share"
+#define TES_PATH_EVENTS_ACK @"events/%@/ack"
+#define TES_PATH_LIST_EVENTS_ACK @"events/acknowledged"
+#define TES_PATH_LIST_EVENTS_FOLLOW @"events/following"
+
+#define TES_PATH_EVENTS_ENACTED  @"events/%@/enact"
+#define TES_PATH_EVENTS_SHARE @"events/%@/share"
 
 #define TES_PATH_POI @"providers/%@/poi"
 #define TES_PATH_PLACE_RUD @"poi/%@"
@@ -743,11 +744,11 @@
 }
 
 - (void)listAcknowledgedLiveEvents:(nullable NSDictionary *)params onCompletion:(TESApiCallback)completionBlock {
-    [self.api call:@"GET" url:TES_PATH_LIST_LIVE_EVENTS_ACK parameters:params auth:YES completionHandler:completionBlock];
+    [self.api call:@"GET" url:TES_PATH_LIST_EVENTS_ACK parameters:params auth:YES completionHandler:completionBlock];
 }
 
 - (void)listFollowedLiveEvents:(nullable NSDictionary *)params onCompletion:(TESApiCallback)completionBlock {
-    [self.api call:@"GET" url:TES_PATH_LIST_LIVE_EVENTS_FOLLOW parameters:params auth:YES completionHandler:completionBlock];
+    [self.api call:@"GET" url:TES_PATH_LIST_EVENTS_FOLLOW parameters:params auth:YES completionHandler:completionBlock];
 }
 
 - (void) listAlertedEvents: (nullable NSDictionary *)params onCompletion:(TESApiCallback)completionBlock {
@@ -757,13 +758,13 @@
 
 - (void)updateEventAck:(nonnull NSString *)eventId isAck:(BOOL)ack onCompletion:(TESApiCallback)completionBlock {
     NSDictionary * params = @{@"ack": @(ack)};
-    NSString * path = [[NSString alloc] initWithFormat:TES_PATH_LIVE_EVENTS_ACK, eventId];
+    NSString * path = [[NSString alloc] initWithFormat:TES_PATH_EVENTS_ACK, eventId];
     [self.api call:@"PUT" url:path parameters:params auth:YES completionHandler:completionBlock];
 }
 
 - (void)updateEventEnacted:(nonnull NSString *)eventId isEnacted:(BOOL)enacted onCompletion:(TESApiCallback)completionBlock {
     NSDictionary * params = @{@"enact": @(enacted)};
-    NSString * path = [[NSString alloc] initWithFormat:TES_PATH_LIVE_EVENTS_ENACTED, eventId];
+    NSString * path = [[NSString alloc] initWithFormat:TES_PATH_EVENTS_ENACTED, eventId];
     [self.api call:@"PUT" url:path parameters:params auth:YES completionHandler:completionBlock];
 }
 
