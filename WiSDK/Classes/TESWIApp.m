@@ -285,6 +285,33 @@
 
 
 
+- (NSDictionary *) addHardwareDetails: (nonnull NSDictionary *) params {
+
+    NSMutableDictionary * info = [[NSMutableDictionary alloc] initWithDictionary:params];
+    NSString * locPerm = [self.locMgr statusName:self.locMgr.authStatus];
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+
+    struct utsname systemInfo;
+    uname(&systemInfo);
+
+   NSString * device = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+
+    info[@"platform"]= @"ios";
+
+    info[@"application"] = bundleIdentifier;
+    info[@"platform_version"] = version;
+    info[@"platform_info"] = @{
+        @"manufacturer": @"apple",
+        @"model": device,
+        @"release": [[UIDevice currentDevice] systemVersion],
+        @"location_permission": locPerm
+    };
+
+    return info;
+}
+
+
 #pragma mark - TESLocationMgrDelegate
 
 - (void)sendDeviceUpdate: (nonnull NSArray *) locInfo inBackground:(BOOL)background {
@@ -297,7 +324,8 @@
             lastloc = locInfo[i];
 
             Device *dev = [self _fillDeviceFromLocation:lastloc];
-            NSDictionary *parameters = [dev toDictionary];
+            NSDictionary *parameters = [self addHardwareDetails:[dev toDictionary]];
+
 
             TESApiCallback callback = ^void(TESCallStatus status, NSDictionary *_Nullable result) {
                 switch (status) {

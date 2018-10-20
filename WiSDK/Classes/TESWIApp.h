@@ -49,6 +49,7 @@
  5. broad search for events
  
  */
+#import <sys/utsname.h>
 
 #import <Foundation/Foundation.h>
 
@@ -465,6 +466,12 @@ typedef void (^errorBlockType)();
  **/
 
 -(void) readProfileImage: (TESApiCallback) completionBlock;
+
+/**
+ * Adds current version and hardware details to the device object
+ * @return new dict merged with given params dict
+ */
+- (NSDictionary *) addHardwareDetails: (nonnull NSDictionary *) params;
 
 /**
  Sends a point to the server. Automatically deals with new or existing devices
