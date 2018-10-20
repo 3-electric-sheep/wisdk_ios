@@ -1,4 +1,4 @@
-#h
+#
 # Be sure to run `pod lib lint WiSDK.podspec' to ensure this is a
 # valid spec before submitting.
 #
@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WiSDK'
-  s.version          = '1.2.3'
+  s.version          = '1.2.4'
   s.summary          = 'Welcome Interruption SDK'
 
 # This description is used to generate tags and improve search results.
