@@ -30,10 +30,10 @@
 #define ENV_TEST @"test"
 
 #define PROD_SERVER @"https://api.3-electric-sheep.com"
-#define PROD_PUSH_PROFILE @"wi-aps-prod"
-
 #define TEST_SERVER @"https://testapi.3-electric-sheep.com"
-#define TEST_PUSH_PROFILE @"wi-aps-dev"
+
+#define PROD_PUSH_PROFILE @"<PROD_PROFILE>"
+#define TEST_PUSH_PROFILE @"<TEST_PROFILE>"
 
 #define WALLET_OFFER_CLASS @"wioffers_pass"
 #define WALLET_PROFILE @"email"
@@ -84,6 +84,7 @@ typedef NS_OPTIONS(NSUInteger, DevicePushTargets
  * provider key as supplied by 3es
  */
 @property (strong, nonatomic, nullable) NSString * providerKey;
+@property (strong, nonatomic, nullable) NSString * testProviderKey;
 
 /**
  * @property memCacheSize
@@ -264,9 +265,10 @@ typedef NS_OPTIONS(NSUInteger, DevicePushTargets
 /**
  * Initialises a config object with defaults
  * @param providerKey the provider api key
+ * @param testProviderKey the test api key
  * @returns  a config object
  */
-- (nullable instancetype) initWithProviderKey: (nullable NSString *) providerKey NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype) initWithProviderKey: (nullable NSString *) providerKey andTestProvider: (nullable NSString *) testProviderKey NS_DESIGNATED_INITIALIZER;
 
 /**
  * creates a config object from a dictionay

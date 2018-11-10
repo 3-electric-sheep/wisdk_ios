@@ -20,6 +20,7 @@
 
 #import "User.h"
 
+
 @implementation User
 
 @dynamic first_name;

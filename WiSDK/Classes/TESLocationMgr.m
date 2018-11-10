@@ -45,6 +45,17 @@
     return self;
 }
 
+- (void) dealloc {
+
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    if (self.observer_fg != nil){
+        [center removeObserver:self.observer_fg];
+    }
+    if (self.observer_bg != nil){
+        [center removeObserver:self.observer_bg];
+    }
+}
+
 #pragma mark - start by getting auth
 
 - (void) startLocationManager: (BOOL) requireAlwaysAuth requestAuth: (BOOL) makeRequest
@@ -185,23 +196,27 @@
 
         // When our app is interrupted, stop the standard location service,
         // and start significant location change service, if available.
-        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            if (weakSelf.config.useSignficantLocation) {
-                // Stop normal location updates and start significant location change updates for battery efficiency.
-                [weakSelf stopForegroundMonitoring];
-                [weakSelf startBackgroundMonitoring:forceFinal];
-            }
-        }];
+        if (self.observer_bg == nil) {
+            self.observer_bg = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:nil usingBlock:^(NSNotification *_Nonnull note) {
+                if (weakSelf.config.useSignficantLocation) {
+                    // Stop normal location updates and start significant location change updates for battery efficiency.
+                    [weakSelf stopForegroundMonitoring];
+                    [weakSelf startBackgroundMonitoring:forceFinal];
+                }
+            }];
+        }
 
         // Stop the significant location change service, if available,
         // and start the standard location service.
-        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            if (self.config.useForegroundMonitoring) {
-                // Stop significant location updates and start normal location updates again since the app is in the forefront.
-                [weakSelf stopBackgroungMonitoring];
-                [weakSelf startForegroundMonitoring:forceFinal];
-            }
-        }];
+        if (self.observer_fg == nil) {
+            self.observer_fg = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *_Nonnull note) {
+                if (self.config.useForegroundMonitoring) {
+                    // Stop significant location updates and start normal location updates again since the app is in the forefront.
+                    [weakSelf stopBackgroungMonitoring];
+                    [weakSelf startForegroundMonitoring:forceFinal];
+                }
+            }];
+        }
         return YES;
     }
     else {
@@ -394,6 +409,12 @@
         NSTimeInterval secs = -[newLocation.timestamp timeIntervalSinceNow];
         if (secs <= self.config.staleLocationThreshold){
             NSLog(@"Got a relevant location fix %f seconds old", secs);
+
+            // write all locations to the server
+            for (CLLocation *newLocation in locations){
+                [self writeDebugInfo: manager newLocation:newLocation];
+            }
+
             [self sendLocationUpdate:locations];
             if (self.foregroundMonitoring){
                 [self stopForegroundMonitoring];

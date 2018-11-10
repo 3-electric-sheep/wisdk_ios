@@ -128,29 +128,17 @@ A minimal integration is just include the TESWiApp.h header and adding code to t
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // the provider key this application is tied too (provider to you by 3es)
-    NSString * PROVIDER_KEY = @"5b53e675ec8d831eb30242d3";
+    NSString * PROD_PROVIDER_KEY = @"xxxxxxxxxxxxxxxxxxxxxxxx"; // wi_prod wisdk demo provider
+    NSString * TEST_PROVIDER_KEY = @"5bb54bd58f3f541552dd0097"; // wi_test wisdk demo provider
 
-    // first thing to do is create a configuration object and overwrite values to suit your environment.
-    // most defaults are sensible.
-    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
-    config.authAutoAuthenticate = YES;
-    config.authCredentials = @{
-           @"anonymous_user": @YES,
-    };
+    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROD_PROVIDER_KEY andTestProvider:TEST_PROVIDER_KEY];
     config.deviceTypes = deviceTypeAPN | deviceTypePassive;
-
-    // IOS has the concept of production and developement APNS servers - we need to ensure the right keys
-    // are setup if we are running in debug mode or production mode.
+    
 #ifdef DEBUG
     config.environment = TES_ENV_TEST;
-    config.testPushProfile = @"wisdk-example-aps-dev";  // test profile name (allocted by 3es)
-    config.pushProfile = @"wisdk-example-aps-dev"; // prod profile name (allocated by 3es)
 #endif
 #ifndef DEBUG
     config.environment = TES_ENV_PROD;
-    config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
-    config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es)
 #endif
 
     // next we create our singleton app object
@@ -184,8 +172,6 @@ sensitivty of geo regions monitored, how users and devices are created and the t
            @"external_id:: @”1234567890”,  // external system user/member id
     };
     config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
-    config.testPushProfile = @"wisdk-example-aps-prod";  // test profile name (allocted by 3es)
-    config.pushProfile = @"wisdk-example-aps-prod"; // prod profile name (allocated by 3es
 
 ```
 
@@ -204,7 +190,7 @@ If interfacing to an external system you can also enter
 
 ```objective-c
 
-    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
+    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROD_PROVIDER_KEY andTestProvider:TEST_PROVIDER_KEY];
     config.authAutoAuthenticate = YES;
     config.authCredentials = @{
         @"anonymous_user": @YES,

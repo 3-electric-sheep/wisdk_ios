@@ -36,16 +36,17 @@ NSString * const TES_ENV_PROD = ENV_PROD;
 
 - (nullable instancetype) init
 {
-    return [self initWithProviderKey:nil];
+    return [self initWithProviderKey:nil andTestProvider:nil];
     
 }
 
-- (nullable instancetype) initWithProviderKey: (nullable NSString *) providerKey
+- (nullable instancetype) initWithProviderKey: (nullable NSString *) providerKey andTestProvider: (nullable NSString *) testProviderKey
 {
     self = [super init];
     if (self){
         // system config
         self.providerKey = providerKey;
+        self.testProviderKey = testProviderKey;
         self.environment = ENV_PROD;
         self.server = PROD_SERVER;
         self.pushProfile = PROD_PUSH_PROFILE;
@@ -72,8 +73,10 @@ NSString * const TES_ENV_PROD = ENV_PROD;
         self.logLocInfo = NO;
 
         // auth config
-        self.authAutoAuthenticate = NO;
-        self.authCredentials = nil;
+        self.authAutoAuthenticate = YES;
+        self.authCredentials =  @{
+           @"anonymous_user": @YES
+        };
 
         //device config
         self.deviceTypes = deviceTypeAPN;
@@ -103,6 +106,7 @@ NSString * const TES_ENV_PROD = ENV_PROD;
 -(void) fromDictionary: (NSDictionary *) dict
 {
     if (dict[@"providerKey"]) self.providerKey = dict[@"providerKey"];
+    if (dict[@"testProviderKey"]) self.testProviderKey = dict[@"testProviderKey"];
     if (dict[@"environment"])self.environment = dict[@"environment"];
     if (dict[@"server"])self.server = dict[@"server"];
     if (dict[@"pushProfile"])self.pushProfile = dict[@"pushProfile"];

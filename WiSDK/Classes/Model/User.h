@@ -22,6 +22,7 @@
 #import <CoreData/CoreData.h>
 
 
+
 @interface User : NSManagedObject
 
 @property (nonatomic, retain) NSString * first_name;

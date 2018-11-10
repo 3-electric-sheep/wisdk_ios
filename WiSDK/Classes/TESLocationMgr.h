@@ -70,6 +70,9 @@
 
 @property (strong, nonatomic, nullable) NSString * errorMsg;
 
+@property (strong, nonatomic, nullable) id<NSObject> observer_fg;
+@property (strong, nonatomic, nullable) id<NSObject> observer_bg;
+
 
 - (nonnull instancetype)initWithConfig: (nullable TESConfig * ) config;
 - (void) startLocationManager: (BOOL) requireAlwaysAuth requestAuth: (BOOL) makeRequest;
