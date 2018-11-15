@@ -169,9 +169,6 @@
     [self setLocaleAndVersionInfo];
     NSLog(@"Environment: %@ Debug: %d Endpoint: %@", config.environment, config.debug, [self.api endpoint:@"/"]);
 
-    // get our push token if we want to register APN devices
-    [self reRegisterServices];
-
     // we self authenticate and pass on the result to any delgate implementing this routine.
     if (!self.isAuthorized && self.config.authAutoAuthenticate){
         deferOnComplete = YES;
@@ -184,6 +181,9 @@
              }
         }];
     }
+
+    // get our push token if we want to register APN devices
+    [self reRegisterServices];
 
     // where we launched indirectly via a push notification or a location update
     if (launchOptions != nil){
@@ -276,11 +276,14 @@
 
 
 - (NSString *)providerToken {
-    return self.config.providerKey;
+    return self.config.getEnvProvider;
 }
 
 - (void)setProviderToken:(NSString *)providerToken {
-    self.config.providerKey = providerToken;
+    if ([self.config.environment isEqualToString:TES_ENV_PROD])
+        self.config.providerKey = providerToken;
+    else
+        self.config.testProviderKey = providerToken;
 }
 
 
@@ -581,7 +584,7 @@
     }
     
     if (params[@"provider_id"] == nil){
-        params[@"provider_id"] = self.config.providerKey;
+        params[@"provider_id"] = self.config.getEnvProvider;
     }
 
      if (haveUser){

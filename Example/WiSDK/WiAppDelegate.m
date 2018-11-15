@@ -13,7 +13,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    NSString * PROD_PROVIDER_KEY = @"5bb54bd58f3f541552dd0097"; // wi_test wisdk demo provider
+    NSString * PROD_PROVIDER_KEY = @"5bbd54056b0f02522c55a116"; // wi_test wisdk demo provider
     NSString * TEST_PROVIDER_KEY = @"5bb54bd58f3f541552dd0097"; // wi_test wisdk demo provider
 
     TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROD_PROVIDER_KEY andTestProvider:TEST_PROVIDER_KEY];

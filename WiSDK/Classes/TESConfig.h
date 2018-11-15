@@ -242,6 +242,7 @@ typedef NS_OPTIONS(NSUInteger, DevicePushTargets
 
 @property (nonatomic, strong, readonly, nonnull) NSString * envServer;
 @property (nonatomic, strong, readonly, nullable) NSString * envPushProfile;
+@property (nonatomic, strong, readonly, nullable) NSString * getEnvProvider;
 
 /**
  * @property useGeoFences

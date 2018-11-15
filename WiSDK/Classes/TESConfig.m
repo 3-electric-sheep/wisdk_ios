@@ -103,6 +103,11 @@ NSString * const TES_ENV_PROD = ENV_PROD;
     return ([self.environment isEqualToString:ENV_PROD]) ? self.pushProfile : self.testPushProfile;
 }
 
+- (nullable NSString *) getEnvProvider
+{
+    return ([self.environment isEqualToString:ENV_PROD]) ? self.providerKey : self.testProviderKey;
+}
+
 -(void) fromDictionary: (NSDictionary *) dict
 {
     if (dict[@"providerKey"]) self.providerKey = dict[@"providerKey"];

@@ -155,6 +155,12 @@ A minimal integration is just include the TESWiApp.h header and adding code to t
 }
 ```
 
+**IMPORTANT** You need to set the environment prior to calling start as this determines the following :-
+
+ * endpoint
+ * provider
+ * push profile (used to select the correct FCM project id or APN certificate
+
 ### configure
 
 Configuration is done completely through the TESConfig object.  It is used to bind a provider with an app and describe how the WiSDK should
@@ -163,15 +169,19 @@ interact with the device and Wi Servers.
 Typically a config object is created at app startup and then passed to the TESWIApp object start method. The config object can set the
 sensitivty of geo regions monitored, how users and devices are created and the type of notification mechanism that should be used by the sdk
 
+By default the config object has good defaults and usually the only thing needed to be set is the type of device type notification to set (ie. the deviceTypes field) 
+
 
 ```objective-c
-    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROVIDER_KEY];
+    TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROD_PROVIDER_KEY andTestProvider:TEST_PROVIDER_KEY];
+    config.deviceTypes = deviceTypeAPN | deviceTypePassive;
+
     config.authAutoAuthenticate = YES;
     config.authCredentials = @{
            @"anonymous_user": @YES,
-           @"external_id:: @”1234567890”,  // external system user/member id
+           @"external_id:: @”1234567890”
     };
-    config.deviceTypes = deviceTypeAPN | deviceTypeWallet;
+
 
 ```
 
