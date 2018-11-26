@@ -263,6 +263,9 @@ typedef NS_OPTIONS(NSUInteger, DevicePushTargets
 
 @property (nonatomic) BOOL singleLocationFix;
 
+@property (nonatomic) BOOL noPermissionDialog;
+
+
 /**
  * Initialises a config object with defaults
  * @param providerKey the provider api key

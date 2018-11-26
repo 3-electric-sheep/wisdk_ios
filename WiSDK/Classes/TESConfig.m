@@ -90,6 +90,9 @@ NSString * const TES_ENV_PROD = ENV_PROD;
         // set single location fix
         self.singleLocationFix = NO;
 
+        // set the no dialog option
+        self.noPermissionDialog = NO;
+
     }
     return self;
 }
@@ -149,6 +152,8 @@ NSString * const TES_ENV_PROD = ENV_PROD;
     if (dict[@"nativeRequestAuth"])self.nativeRequestAuth = [dict[@"nativeRequestAuth"] boolValue];
 
     if (dict[@"singleLocationFix"]) self.singleLocationFix = [dict[@"singleLocationFix"] boolValue];
+    if (dict[@"noPermissionDialog"])self.noPermissionDialog = [dict[@"noPermissionDialog"] boolValue];
+
 }
 
 @end

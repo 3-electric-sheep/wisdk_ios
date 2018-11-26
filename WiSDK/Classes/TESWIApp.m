@@ -139,7 +139,7 @@
     }
     self.locMgr.delegate = self;
 
-    [self.locMgr startLocationManager:self.config.requireBackgroundLocation requestAuth:YES];
+    [self.locMgr startLocationManager:self.config.requireBackgroundLocation requestAuth:!self.config.noPermissionDialog];
 
     self.pushMgr = [[TESPushMgr alloc] initWithProfile:self.config.envPushProfile];
     if (self.pushMgr == nil){
@@ -185,15 +185,17 @@
     // get our push token if we want to register APN devices
     [self reRegisterServices];
 
+    [self cehckAndSaveLaunchOptions: launchOptions];
+
     // where we launched indirectly via a push notification or a location update
-    if (launchOptions != nil){
-        NSDictionary* dictionary = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (self.launchOptions != nil){
+        NSDictionary* dictionary = self.launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
         if (dictionary != nil){
             NSLog(@"Launched from push notification: %@", dictionary);
             [self processRemoteNotification:dictionary];
         }
 
-        if (launchOptions[UIApplicationLaunchOptionsLocationKey]){
+        if (self.launchOptions[UIApplicationLaunchOptionsLocationKey]){
             [self.locMgr writeDebugMsg:nil msg:@"App relaunched due ot location message"];
             if (self.isAuthorized)
                 [self.locMgr ensureMonitoring];
@@ -204,6 +206,15 @@
         [self.delegate onStartupComplete:self.isAuthorized];
     }
     return YES;
+}
+
+
+- (NSDictionary *) cehckAndSaveLaunchOptions: (nullable NSDictionary *)launchOptions{
+    if (launchOptions != nil){
+        self.launchOptions = launchOptions;
+        return self.launchOptions;
+    }
+    return nil;
 }
 
 - (void)reRegisterServices {
@@ -244,8 +255,9 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(processRemoteNotification:)]){
         [self.delegate processRemoteNotification:userInfo];
     }
-    NSString * eventId = userInfo[@"event_id"];
-    [self updateEventAck:eventId isAck:YES onCompletion:nil];
+    NSString * eventId = userInfo[@"event-id"];
+    if (eventId != nil)
+        [self updateEventAck:eventId isAck:YES onCompletion:nil];
 
 }
 

@@ -304,6 +304,11 @@ typedef void (^errorBlockType)();
 @property(nonatomic) BOOL isAuthenticating;
 
 /**
+ * initial notofication object
+ */
+@property (nonatomic, strong, nullable) NSDictionary * launchOptions;
+
+/**
  Creates and returns an `TESWIApp` object.
 
  @returns the app object
@@ -340,6 +345,24 @@ typedef void (^errorBlockType)();
 
  */
 - (BOOL)start:(nonnull TESConfig *)config withLaunchOptions:(nullable NSDictionary *)launchOptions;
+
+/**
+ * Check for notification and if found saves it for later processing
+ *
+ * Checks for notification and stashes it for later if found. It can be called prior to start.
+ * Android es and combo data/alert notification into the startup intentes activity intent extras.
+ *
+ * this call should be made in the start up activity, prior to calling start.
+ *
+ * @param activity: the start up acttivty to check for.
+ * @returns THe notification object if it was in the extras.
+ *
+ * NOTE: if it finds something in the getExtras it sets startNotification and returns the object at the same
+ * time. If there is nothing it getExtras it returns null regardless of the contents of startNotification
+ *
+ */
+
+- (NSDictionary *) cehckAndSaveLaunchOptions: (nullable NSDictionary *)launchOptions;
 
 /**
  returns whether the user has a valid device token

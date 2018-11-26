@@ -301,6 +301,19 @@
 
     BOOL isInBackground = [self isInBackground];
 
+    //  background requires always permission
+
+    if (isInBackground && self.authStatus != kCLAuthorizationStatusAuthorizedAlways){
+        [self ensureNotMonitoring];
+        return NO;
+    }
+
+    // foreground requires always or when in use.
+    if (!isInBackground && self.authStatus != kCLAuthorizationStatusAuthorizedWhenInUse && self.authStatus != kCLAuthorizationStatusAuthorizedAlways){
+        [self ensureNotMonitoring];
+        return NO;
+    }
+
     if (self.config.useVisitMonitoring){
         if (!self.visitMonitoring)
             [self startVisitMonitoring:FALSE];
@@ -340,6 +353,11 @@
  */
 - (BOOL) addRegion: (CLLocationCoordinate2D) coord andRadius: (double) radius  andIdentifier: (nullable NSString *) identifier
 {
+    if (self.authStatus != kCLAuthorizationStatusAuthorizedAlways) {
+        return NO;
+    }
+
+
     if ([CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]]) {
         if (radius < 0){
             radius = self.config.geoRadius;
