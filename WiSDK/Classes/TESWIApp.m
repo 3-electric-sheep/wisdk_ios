@@ -208,6 +208,9 @@
     return YES;
 }
 
+- (BOOL)start:(nonnull TESConfig *)config {
+    return [self start:config withLaunchOptions:nil];
+}
 
 - (NSDictionary *) cehckAndSaveLaunchOptions: (nullable NSDictionary *)launchOptions{
     if (launchOptions != nil){
@@ -215,6 +218,11 @@
         return self.launchOptions;
     }
     return nil;
+}
+
+- (void) stop {
+    if (self.locMgr != nil)
+        [self.locMgr stopLocationManager];
 }
 
 - (void)reRegisterServices {

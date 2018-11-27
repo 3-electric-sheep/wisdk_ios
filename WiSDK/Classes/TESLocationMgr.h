@@ -76,6 +76,7 @@
 
 - (nonnull instancetype)initWithConfig: (nullable TESConfig * ) config;
 - (void) startLocationManager: (BOOL) requireAlwaysAuth requestAuth: (BOOL) makeRequest;
+- (void) stopLocationManager;
 
 - (BOOL) locationServicesEnabled;
 - (BOOL) significantLocationChangeMonitoringAvailable;

@@ -86,8 +86,22 @@
 
 }
 
+- (void) stopLocationManager {
+    [self ensureNotMonitoring];
+    [self clearRegions];
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    if (self.observer_fg != nil){
+        [center removeObserver:self.observer_fg];
+        self.observer_fg = nil;
+    }
+    if (self.observer_bg != nil){
+        [center removeObserver:self.observer_bg];
+        self.observer_bg = nil;
+    }
+}
 
-#pragma mark - info methods
+ #pragma mark - info methods
 
 - (BOOL) locationServicesEnabled
 {

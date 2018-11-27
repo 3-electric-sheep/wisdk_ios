@@ -282,7 +282,7 @@ typedef void  (^ _Nullable TESApiCallback)(TESCallStatus status,  NSDictionary *
  * Port from AFNetworking 2.0
  */
 - (void)setShouldExecuteAsBackgroundTask: (nullable NSURLSessionDataTask *) downloadTask
-        WithExpirationHandler:(nullable void (^)()) handler;
+                   WithExpirationHandler:(nullable void (^)(void)) handler;
 
 /**
  Check for authorization failure by interpreting the NSError returned

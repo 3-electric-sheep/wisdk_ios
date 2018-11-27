@@ -309,7 +309,7 @@
 
 #pragma mark - background support
 
-- (void)setShouldExecuteAsBackgroundTask: (nullable NSURLSessionDataTask *)downloadTask WithExpirationHandler:(nullable void (^)())handler {
+- (void)setShouldExecuteAsBackgroundTask: (nullable NSURLSessionDataTask *)downloadTask WithExpirationHandler:(nullable void (^)(void))handler {
     if (!self.backgroundTaskIdentifier) {
         UIApplication *application = [UIApplication sharedApplication];
         __weak __typeof(&*self)weakSelf = self;

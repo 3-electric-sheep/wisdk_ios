@@ -96,7 +96,7 @@
 #define EXCLUDE_ALL_CATEGORIES @"*"
 
 
-typedef void (^errorBlockType)();
+typedef void (^errorBlockType)(void);
 
 /**
   TESWIAppDelegate protocol
@@ -347,14 +347,26 @@ typedef void (^errorBlockType)();
 - (BOOL)start:(nonnull TESConfig *)config withLaunchOptions:(nullable NSDictionary *)launchOptions;
 
 /**
+ Start but with no launch options. Launch should be got from check and save launch Options
+ **/
+
+- (BOOL)start:(nonnull TESConfig *)config;
+
+/**
+ Stop the sdk
+ **/
+
+- (void) stop;
+
+/**
  * Check for notification and if found saves it for later processing
  *
  * Checks for notification and stashes it for later if found. It can be called prior to start.
  * Android es and combo data/alert notification into the startup intentes activity intent extras.
  *
- * this call should be made in the start up activity, prior to calling start.
+ * this call should be made in the appdelegate didFinishLaunchingWithOptions.
  *
- * @param activity: the start up acttivty to check for.
+ * @param launchOptions the start up acttivty to check for.
  * @returns THe notification object if it was in the extras.
  *
  * NOTE: if it finds something in the getExtras it sets startNotification and returns the object at the same
