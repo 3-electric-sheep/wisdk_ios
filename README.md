@@ -260,6 +260,68 @@ Both of these calls make an async network call and will return a JSON result dic
 
 NOTE: these calls will fail unless you have successfully authenticated with the system
 
+### Advanced setup
+It is still possible to use the wiSDK in apps where you need to confiure the SDK in a place other than the AppDelegate didFinishLaunchingWithOptions. It is also possible to customise the wiSDK so it doesn't display the permission dialogs. The following examples explain what you need to do.
+
+If you want to defer your initialisation you can do the following in the AppDelegate didFinishLaunchingWithOptions
+
+```objective-c
+   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+   {   
+        TESWIApp * app = [TESWIApp manager]; // first call will create a singleton.
+	    [app.cehckAndSaveLaunchOptions launchOptions];
+	}
+	
+	- (void) someOtherMethodCalledLater()
+	{
+	     NSString * PROD_PROVIDER_KEY = @"xxxxxxxxxxxxxxxxxxxxxxxx"; 
+        NSString * TEST_PROVIDER_KEY = @"yyyyyyyyyyyyyyyyyyyyyyyy"; 
+
+        TESConfig * config = [[TESConfig alloc] initWithProviderKey:PROD_PROVIDER_KEY 
+                                                andTestProvider:TEST_PROVIDER_KEY];
+                                                
+        config.deviceTypes = deviceTypeAPN | deviceTypePassive;
+        
+        #ifdef DEBUG
+		    config.environment = TES_ENV_TEST;
+		 #else
+		    config.environment = TES_ENV_PROD;
+		 #endif
+
+	    TESWIApp * app = [TESWIApp manager]; // this will just get the singleton created before
+	    app.delegate = self;
+	    [app start:config]; // this will use the launch options in step 1 or you can pass them 
+	                        // in here if you saved them yourself.
+	}
+```
+
+**NOTE**: it is **extremely important** to ensure that the launchOptions are saved here using this call if you don't plan on calling the start in the didFinishLaunchingWithOptions call.  The launch options must be passed to the start command or set using the checkAndSaveLaunchOptions methods as this is how IOS tells us we have been started due to either a remote notification or a location update.
+
+If you want to display location permission yourself, you just need to set the noPermissionDialog config option as following:-
+
+```objective-c
+
+   TESConfig * config = [[TESConfig alloc] initWithProviderKey:...];
+   config.noPermissionDialog = YES;  // No permission dialog if set to true                                       
+```
+
+If you want to only get a single location fix while in foreground then stop location services just set:-
+ 
+```objective-c
+
+   TESConfig * config = [[TESConfig alloc] initWithProviderKey:...];
+   config.singleLocationFix = YES;                                  
+```
+
+if you want to disable the wiSDK, just call the stop method as follows:-
+
+```objective-c
+
+    TESWIApp * app = [TESWIApp manager]; // this will just get the singleton created before
+    [app stop];                                
+```
+
+**NOTE** its fine to call [TESWiApp manager] as many times as you like as it will always return a singleton object, but you should only ever call start once and only once.
 
 ### Listeners
 
